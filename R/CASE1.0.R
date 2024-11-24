@@ -16,7 +16,9 @@
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples 
 #' TBD
-#' @importFrom stats var
+#' @import magrittr
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom MASS ginv
 #' @export
 ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL, 
                      V = NULL, h = NULL,
@@ -43,7 +45,7 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
   hatB = hatBS$hatB
   hatS = hatBS$hatS
   
-  
+ 
   if (MC.seq == "fix"){
     MC.sim = rep(MC.max, n.iter)
   }else if (MC.seq == "linear"){
@@ -71,18 +73,6 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
       }
     }
   }
-  
-  # ME_p <- 2 - 2 * pnorm(abs(hatB / hatS), 0, 1)
-  # idx <- apply(ME_p > noise_threshold, 1, all)
-  # if (length(idx) <= 1e5){
-  #   V = array(0, dim = c(C, C, G))
-  # } else{
-  #   V = array(cor(hatB[[i]][idx, ]), dim = c(C, C, G))
-  #   V[is.na(V)] = 0
-  # }
-  # for (kk in 1:C){
-  #   V[kk, kk, ] = 1
-  # }
   
   # Initialization
   M <- nrow(R)
@@ -181,19 +171,6 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
       }
     }
     
-    # Update V's
-    #   if (!V.fix){
-    #     first_mom = t(hatB[[j]]) %*% apply(BB[[j]][, , samp.ind], 1:2, mean)
-    #     first_mom = first_mom + t(first_mom)
-    #     second_mom = matrix(0, C, C)
-    #     for (sam in samp.ind){
-    #       second_mom = second_mom + t(BB[[j]][, , sam]) %*% R[[j]] %*% BB[[j]][, , sam]
-    #     }
-    #     second_mom = second_mom / length(samp.ind)
-    #     V[, , j] = (iRB[[j]] - first_mom + second_mom) / M[j]
-    #   }
-    # }
-    
     # End of E-step
     
     # g_jkt
@@ -278,7 +255,6 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
       pi = pi[-ll]
     }
     
-    
     L = length(U)
     if (L <= 1){
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
@@ -318,7 +294,9 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples 
 #' TBD
-#' @importFrom stats var
+#' @import magrittr
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom MASS ginv
 #' @export
 ED_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58){
   # Here V is V adjusted for sample sizes
@@ -384,10 +362,9 @@ ED_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sampl
 #'
 #' Obtain credible sets for any multi-trait fine-mapping results.
 #' @param pvalues (M * C),The pvalues of SNPs.
-#' @return The temperature in degrees Celsius
+#' @return Credible Sets
 #' @examples 
-#' temp1 <- F_to_C(50);
-#' temp2 <- F_to_C( c(50, 63, 23) );
+#' TBD
 #' @export
 get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-4){
   C = ncol(pvalues)

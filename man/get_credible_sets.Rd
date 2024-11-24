@@ -10,12 +10,11 @@ get_credible_sets(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-04)
 \item{pvalues}{(M * C),The pvalues of SNPs.}
 }
 \value{
-The temperature in degrees Celsius
+Credible Sets
 }
 \description{
 Obtain credible sets for any multi-trait fine-mapping results.
 }
 \examples{
-temp1 <- F_to_C(50);
-temp2 <- F_to_C( c(50, 63, 23) );
+TBD
 }

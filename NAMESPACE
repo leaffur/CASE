@@ -3,4 +3,6 @@
 export(ED_test)
 export(ED_train)
 export(get_credible_sets)
-importFrom(stats,var)
+import(magrittr)
+importFrom(MASS,ginv)
+importFrom(mvtnorm,rmvnorm)
