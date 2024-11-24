@@ -1,0 +1,7 @@
+{
+    "installOptions": {
+        "installFromRepository": true,
+        "libraryPath": "/gpfs/gibbs/project/zhao/cl2384/R/4.2",
+        "installDependencies": true
+    }
+}
