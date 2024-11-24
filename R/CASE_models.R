@@ -1,5 +1,3 @@
-# source("/gpfs/gibbs/pi/zhao/cl2384/scEQTL/ExtremeD/CASE_uitility.R")
-
 #' @title CASE Model Training
 #' 
 #' @description Fit the priors for the cis-eQTL effect sizes.
@@ -16,11 +14,10 @@
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples 
 #' TBD
-#' @import magrittr
-#' @importFrom mvtnorm rmvnorm
-#' @importFrom MASS ginv
+#' @importFrom magrittr %>%
+#' @importFrom stats pnorm qchisq
 #' @export
-ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL, 
+CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL, 
                      V = NULL, h = NULL,
                      pi.init = NULL, U.orig = NULL,  
                      V.fix = TRUE, pi.fix = FALSE, 
@@ -294,11 +291,10 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples 
 #' TBD
-#' @import magrittr
-#' @importFrom mvtnorm rmvnorm
-#' @importFrom MASS ginv
+#' @importFrom magrittr %>%
+#' @importFrom stats sd
 #' @export
-ED_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58){
+CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58){
   # Here V is V adjusted for sample sizes
   #### Testing ####
   if (is.null(Z)){
@@ -365,6 +361,7 @@ ED_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sampl
 #' @return Credible Sets
 #' @examples 
 #' TBD
+#' @importFrom magrittr %>%
 #' @export
 get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-4){
   C = ncol(pvalues)
