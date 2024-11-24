@@ -2,5 +2,6 @@ Encoding: UTF-8
 Package: CASE
 Type: Package
 Title: Cell-type-specific And Shared EQTL fine-mappinp
-Version: 0.0.1.0RoxygenNote: 7.3.1
+Version: 0.0.1.0
 RoxygenNote: 7.3.1
+URL: https://leaffur.github.io/CASE/
