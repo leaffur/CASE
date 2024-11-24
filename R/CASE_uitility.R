@@ -12,46 +12,6 @@ transform_Z <- function(Z, N){
   return(list(hatB = hatB, hatS = hatS))
 }
 
-select_min_length_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
-  N <- length(p)
-  best_set <- NULL  # To track the best (smallest) valid set
-  best_set_length <- N + 1  # To track the length of the best set (initially set to larger than N)
-  
-  # Helper function to check if adding a new element keeps the correlation valid
-  is_valid_set <- function(selected, new_idx) {
-    if (length(selected) == 0) {
-      return(TRUE)
-    }
-    # Check if all correlations with the current selected set are >= min_corr
-    return(all(abs(R[new_idx, selected]) >= min_corr))
-  }
-  
-  # Recursive backtracking function to explore combinations
-  backtrack <- function(selected, current_sum, idx) {
-    # If the current sum exceeds the threshold, check if this is the smallest valid set
-    if (current_sum >= threshold_sum) {
-      if (length(selected) < best_set_length) {
-        best_set <<- selected
-        best_set_length <<- length(selected)
-      }
-      return()
-    }
-    
-    if (idx <= N) {
-      for (i in idx:N) {
-        if (is_valid_set(selected, i)) {
-          backtrack(c(selected, i), current_sum + p[i], i + 1)
-        }
-      }
-    }
-  }
-  
-  # Start backtracking with the first element already included
-  backtrack(selected = 1, current_sum = p[1], idx = 2)
-  
-  return(best_set)
-}
-
 select_first_valid_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
   N <- length(p)
   
@@ -95,7 +55,7 @@ select_first_valid_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
           }
           
           if (!is.null(result)) {
-            return(result)  # Return the result as soon as a valid set is found
+            return(result)
           }
         }
       }
@@ -218,36 +178,6 @@ gBupdate <- function(B, hatB, R, pi, h = NULL,
   return(B)
 }
 
-# pupdate <- function(B, hatB, R, pi, TT, TT_det, mu1, Sigma1){
-#   C = dim(hatB)[2]
-#   M = nrow(B)
-#   L = length(pi)
-#   
-#   CASE1 = post1 = matrix(0, M, C)
-#   for (i in 1:M){
-#     res = hatB[i, ] - t(B) %*% R[, i]
-#     pi1 = TT_det / 2 + log(pi)
-#     
-#     for (l in 1:length(pi)){
-#       pi1[l] = pi1[l] - (t(res) %*% TT[, , l] %*% res) / 2
-#     }
-#     
-#     pi1 = exp(pi1 - max(pi1))
-#     pi1 = pi1 / sum(pi1)
-#     
-#     for (l in 1:L){
-#       post = mu1[, , l] %*% res
-#       if (any(abs(post) < 1e-8)){
-#         post[abs(post) < 1e-8] = 0
-#       }
-#       CASE1[i, ] = CASE1[i, ] + pi1[l] * (post != 0)
-#       post1[i, ] = post1[i, ] + pi1[l] * post
-#     }
-#   }
-#   
-#   return(list(CASE1 = CASE1, post1 = post1))
-# }
-
 canonical_patterns <- function(C) {
   single_bit_strings <- sapply(1:C, function(i) {
     binary_string <- rep(0, C)  # Create a vector of C zeroes
@@ -302,5 +232,3 @@ Initialize_pi_U <- function(hatB, hatS, C, M, sig_threshold = 0.1){
   
   return(list(pi = pi, U = U))
 }
-
-###################
