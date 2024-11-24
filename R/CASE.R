@@ -12,8 +12,6 @@
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
-#' @examples 
-#' TBD
 #' @export
 CASE <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL, 
                      V = NULL, h = NULL,

@@ -43,9 +43,6 @@ Fit the priors for the cis-eQTL effect sizes.
 \details{
 TBD
 }
-\examples{
-TBD
-}
 \references{
 TBD
 }

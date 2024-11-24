@@ -46,9 +46,6 @@ Perform Multi-trait Fine-mapping
 \details{
 TBD
 }
-\examples{
-TBD
-}
 \references{
 TBD
 }

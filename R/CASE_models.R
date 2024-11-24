@@ -12,8 +12,6 @@
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
-#' @examples 
-#' TBD
 #' @importFrom magrittr %>%
 #' @importFrom stats pnorm qchisq
 #' @export
@@ -289,8 +287,6 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
-#' @examples 
-#' TBD
 #' @importFrom magrittr %>%
 #' @importFrom stats sd
 #' @export
@@ -359,8 +355,6 @@ CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sam
 #' Obtain credible sets for any multi-trait fine-mapping results.
 #' @param pvalues (M * C),The pvalues of SNPs.
 #' @return Credible Sets
-#' @examples 
-#' TBD
 #' @importFrom magrittr %>%
 #' @export
 get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-4){
