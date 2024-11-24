@@ -7,15 +7,30 @@
 ED_test(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58)
 }
 \arguments{
-\item{Z}{(M * C),The z scores for eQTL summary statistics.}
+\item{hatB}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+
+\item{Z}{M * C matrix of z scores.}
+
+\item{R}{M * M matrix of LD.}
 }
 \value{
-The temperature in degrees Celsius
+A \code{"CASE"} object with the following elements:
+\item{pi:}{L-vector, the prior probabilities of sharing patterns.}
+\item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
+\item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 }
 \description{
 Obtain the posterior probabilities and estimates of the cis-eQTL effect sizes.
 }
+\details{
+TBD
+}
 \examples{
-temp1 <- F_to_C(50);
-temp2 <- F_to_C( c(50, 63, 23) );
+TBD
+}
+\references{
+TBD
+}
+\author{
+Chen Lin, Hongyu Zhao
 }
