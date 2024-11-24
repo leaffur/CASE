@@ -25,9 +25,6 @@ Obtain the posterior probabilities and estimates of the cis-eQTL effect sizes.
 \details{
 TBD
 }
-\examples{
-TBD
-}
 \references{
 TBD
 }

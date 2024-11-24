@@ -15,6 +15,3 @@ Credible Sets
 \description{
 Obtain credible sets for any multi-trait fine-mapping results.
 }
-\examples{
-TBD
-}
