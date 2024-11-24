@@ -302,14 +302,23 @@ ED_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
 }
 
 
-#' CASE Model Testing
-#'
-#' Obtain the posterior probabilities and estimates of the cis-eQTL effect sizes.
-#' @param Z (M * C),The z scores for eQTL summary statistics.
-#' @return The temperature in degrees Celsius
+#' @title CASE Model Testing
+#' 
+#' @description Obtain the posterior probabilities and estimates of the cis-eQTL effect sizes.
+#' @author Chen Lin, Hongyu Zhao
+#' @details TBD
+#' @references TBD
+#' @param Z M * C matrix of z scores.
+#' @param R M * M matrix of LD.
+#' @param hatB M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.
+#' @param hatB M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
+#' @return A \code{"CASE"} object with the following elements:
+#' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
+#' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
+#' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples 
-#' temp1 <- F_to_C(50);
-#' temp2 <- F_to_C( c(50, 63, 23) );
+#' TBD
+#' @importFrom stats var
 #' @export
 ED_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58){
   # Here V is V adjusted for sample sizes
