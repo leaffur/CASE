@@ -1,7 +1,21 @@
-Encoding: UTF-8
-Package: CASE
 Type: Package
-Title: Cell-type-specific And Shared EQTL fine-mappinp
-Version: 0.0.1.0
-RoxygenNote: 7.3.1
+Package: CASE
+Title: Cell-type-specific And Shared EQTL fine-mapping
+Version: 0.0.2
+Authors@R: c(
+    person("Chen", "Lin", , "c.lin@yale.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9821-2578")),
+    person("Hongyu", "Zhao", , "hongyu.zhao@yale.edu", role = "aut")
+  )
+Description: A framework to perform multi-trait fine-mapping analysis
+    using summary statistics, particularly tailored for eQTL fine-mapping
+    across multiple cell types.
+License: GPL (>= 3)
 URL: https://leaffur.github.io/CASE/
+Imports: 
+    magrittr,
+    MASS,
+    mvtnorm,
+    stats
+Encoding: UTF-8
+RoxygenNote: 7.3.1

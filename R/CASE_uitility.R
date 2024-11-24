@@ -12,6 +12,7 @@ transform_Z <- function(Z, N){
   return(list(hatB = hatB, hatS = hatS))
 }
 
+
 select_first_valid_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
   N <- length(p)
   
@@ -84,6 +85,7 @@ replace_nonzero_with_mean <- function(row) {
   return(row)
 }
 
+#' @importFrom MASS ginv
 gB_coef <- function(U, V){
   C = nrow(U[[1]])
   L = length(U)
@@ -104,6 +106,8 @@ gB_coef <- function(U, V){
   return(list(TT = TT, TT_det = TT_det, mu1 = mu1, Sigma1 = Sigma1))
 }
 
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom stats quantile rmultinom qnorm qchisq
 gBupdate <- function(B, hatB, R, pi, h = NULL,
                      TT, TT_det, mu1, Sigma1){
   C = dim(hatB)[2]
@@ -191,6 +195,7 @@ canonical_patterns <- function(C) {
   return(result)
 }
 
+#' @importFrom stats p.adjust pnorm
 adjust_sumstats <- function(hatB, hatS, method = "BH"){
   ME_p <- 2 - 2 * pnorm(abs(hatB / hatS), 0, 1)
   ME_p <- apply(ME_p, 2, function(x) p.adjust(x, method = method))
