@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_credible_sets</span><span class="op">(</span><span class="va">pvalues</span>, <span class="va">R</span>, cor.min <span class="op">=</span> <span class="fl">0.5</span>, pip <span class="op">=</span> <span class="fl">0.95</span>, ruled_out <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">1e-04</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_credible_sets</span><span class="op">(</span><span class="va">pvalues</span>, <span class="va">R</span>, cor.min <span class="op">=</span> <span class="fl">0.5</span>, pip <span class="op">=</span> <span class="fl">0.95</span>, ruled_out <span class="op">=</span> <span class="fl">1e-04</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -54,10 +54,26 @@
 <dl><dt id="arg-pvalues">pvalues<a class="anchor" aria-label="anchor" href="#arg-pvalues"></a></dt>
 <dd><p>(M * C),The pvalues of SNPs.</p></dd>
 
+
+<dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
+<dd><p>M * M matrix of LD.</p></dd>
+
+
+<dt id="arg-cor-min">cor.min<a class="anchor" aria-label="anchor" href="#arg-cor-min"></a></dt>
+<dd><p>minimum correlation in the credible sets</p></dd>
+
+
+<dt id="arg-pip">pip<a class="anchor" aria-label="anchor" href="#arg-pip"></a></dt>
+<dd><p>threshold for the sum of PIPs.</p></dd>
+
+
+<dt id="arg-ruled-out">ruled_out<a class="anchor" aria-label="anchor" href="#arg-ruled-out"></a></dt>
+<dd><p>excluding criteria for not considering SNPs with PIP less than the threshold.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Credible Sets</p>
+    <p>a length C list of credible sets.</p>
     </div>
 
   </div>

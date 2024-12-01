@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -44,23 +44,39 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE_test</span><span class="op">(</span>hatB <span class="op">=</span> <span class="cn">NULL</span>, Z <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">R</span>, <span class="va">N</span>, <span class="va">V</span>, <span class="va">U</span>, <span class="va">pi</span>, MC.sim <span class="op">=</span> <span class="fl">41</span>, MC.sample <span class="op">=</span> <span class="fl">58</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE_test</span><span class="op">(</span>Z <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">R</span>, hatB <span class="op">=</span> <span class="cn">NULL</span>, hatS <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">N</span>, <span class="va">CASE_training</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
 
 
-<dl><dt id="arg-hatb">hatB<a class="anchor" aria-label="anchor" href="#arg-hatb"></a></dt>
-<dd><p>M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.</p></dd>
-
-
-<dt id="arg-z">Z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
+<dl><dt id="arg-z">Z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
 <dd><p>M * C matrix of z scores.</p></dd>
 
 
 <dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
 <dd><p>M * M matrix of LD.</p></dd>
+
+
+<dt id="arg-hatb">hatB<a class="anchor" aria-label="anchor" href="#arg-hatb"></a></dt>
+<dd><p>M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-hats">hatS<a class="anchor" aria-label="anchor" href="#arg-hats"></a></dt>
+<dd><p>M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.</p></dd>
+
+
+<dt id="arg-case-training">CASE_training<a class="anchor" aria-label="anchor" href="#arg-case-training"></a></dt>
+<dd><p>A <code>"CASE_training"</code> object.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -74,6 +90,12 @@
 
 <dt>V:</dt>
 <dd><p>C * C matrix, the sample-adjusted phenotypical variance.</p></dd>
+
+<dt>pvalue:</dt>
+<dd><p>M * C matrix, posterior probability of no eQTL effects per SNP per cell type.</p></dd>
+
+<dt>post_mean:</dt>
+<dd><p>M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.</p></dd>
 
 </dl></div>
     <div id="details">

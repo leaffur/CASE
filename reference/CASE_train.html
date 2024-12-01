@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -44,25 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE_train</span><span class="op">(</span></span>
-<span>  Z <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">R</span>,</span>
-<span>  <span class="va">N</span>,</span>
-<span>  hatB <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  hatS <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  V <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  h <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  pi.init <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  U.orig <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  V.fix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  pi.fix <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  n.iter <span class="op">=</span> <span class="fl">45</span>,</span>
-<span>  MC.max <span class="op">=</span> <span class="fl">125</span>,</span>
-<span>  tol <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>  MC.seq <span class="op">=</span> <span class="st">"exp"</span>,</span>
-<span>  significant_thres <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>  noise_threshold <span class="op">=</span> <span class="fl">0.1</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE_train</span><span class="op">(</span>Z <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">R</span>, hatB <span class="op">=</span> <span class="cn">NULL</span>, hatS <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">N</span>, V <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,12 +60,28 @@
 
 
 <dt id="arg-hatb">hatB<a class="anchor" aria-label="anchor" href="#arg-hatb"></a></dt>
+<dd><p>M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-hats">hatS<a class="anchor" aria-label="anchor" href="#arg-hats"></a></dt>
 <dd><p>M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.</p></dd>
+
+
+<dt id="arg-v">V<a class="anchor" aria-label="anchor" href="#arg-v"></a></dt>
+<dd><p>(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>"CASE"</code> object with the following elements:</p>
+    <p>A <code>"CASE_training"</code> object with the following elements:</p>
 <dl><dt>pi:</dt>
 <dd><p>L-vector, the prior probabilities of sharing patterns.</p></dd>
 

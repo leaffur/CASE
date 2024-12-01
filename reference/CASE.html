@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -44,28 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE</span><span class="op">(</span></span>
-<span>  Z <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">R</span>,</span>
-<span>  <span class="va">N</span>,</span>
-<span>  hatB <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  hatS <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  V <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  h <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  cs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  pi.init <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  U.orig <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  V.fix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  pi.fix <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  n.iter <span class="op">=</span> <span class="fl">45</span>,</span>
-<span>  MC.max <span class="op">=</span> <span class="fl">125</span>,</span>
-<span>  tol <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>  MC.seq <span class="op">=</span> <span class="st">"exp"</span>,</span>
-<span>  MC.sim <span class="op">=</span> <span class="fl">41</span>,</span>
-<span>  MC.sample <span class="op">=</span> <span class="fl">58</span>,</span>
-<span>  significant_thres <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>  noise_threshold <span class="op">=</span> <span class="fl">0.1</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE</span><span class="op">(</span>Z <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">R</span>, hatB <span class="op">=</span> <span class="cn">NULL</span>, hatS <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">N</span>, V <span class="op">=</span> <span class="cn">NULL</span>, cs <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,7 +60,27 @@
 
 
 <dt id="arg-hatb">hatB<a class="anchor" aria-label="anchor" href="#arg-hatb"></a></dt>
+<dd><p>M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-hats">hatS<a class="anchor" aria-label="anchor" href="#arg-hats"></a></dt>
 <dd><p>M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.</p></dd>
+
+
+<dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.</p></dd>
+
+
+<dt id="arg-v">V<a class="anchor" aria-label="anchor" href="#arg-v"></a></dt>
+<dd><p>(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.</p></dd>
+
+
+<dt id="arg-cs">cs<a class="anchor" aria-label="anchor" href="#arg-cs"></a></dt>
+<dd><p>logical, whether to get credible sets.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -110,6 +109,78 @@
     <p>Chen Lin, Hongyu Zhao</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">N</span> <span class="op">=</span> <span class="fl">500</span></span></span>
+<span class="r-in"><span><span class="va">M</span> <span class="op">=</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span><span class="va">C</span> <span class="op">=</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, size <span class="op">=</span> <span class="va">N</span> <span class="op">*</span> <span class="va">M</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">N</span>, <span class="va">M</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span>, <span class="va">C</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">B</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">C</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">B</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="va">C</span><span class="op">)</span>, <span class="va">N</span>, <span class="va">C</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Y</span> <span class="op">=</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">B</span> <span class="op">+</span> <span class="va">e</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">R</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">Z</span> <span class="op">=</span> <span class="va">hatB</span> <span class="op">=</span> <span class="va">hatS</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">c</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">hatB</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">Y</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span> <span class="op">/</span> <span class="op">(</span><span class="va">N</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">hatS</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>  <span class="op">-</span> <span class="va">hatB</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">N</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">N</span> <span class="op">/</span> <span class="op">(</span><span class="va">N</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">Z</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">hatB</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span> <span class="op">/</span> <span class="va">hatS</span><span class="op">[</span>, <span class="va">c</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">CASE</span><span class="op">(</span>Z <span class="op">=</span> <span class="va">Z</span>, R <span class="op">=</span> <span class="va">R</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Initialize with patterns:  111 100 010 001 000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Start Posterior Analysis.Start getting credible sets.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sets</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$cs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$cs[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$cs[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$purity_min_cor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$coverage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$cs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$cs[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$purity_min_cor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]$coverage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$cs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$cs[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$purity_min_cor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]$coverage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
