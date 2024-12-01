@@ -7,31 +7,27 @@
 #' @param Z M * C matrix of z scores.
 #' @param R M * M matrix of LD.
 #' @param hatB M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.
-#' @param hatB M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
-#' @return A \code{"CASE"} object with the following elements:
+#' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
+#' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
+#' @param V (optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.
+#' @param ... additional arguments.
+#' @return A \code{"CASE_training"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @importFrom magrittr %>%
-#' @importFrom stats pnorm qchisq
+#' @importFrom stats pnorm qchisq cov2cor
 #' @export
-CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL, 
-                     V = NULL, h = NULL,
-                     pi.init = NULL, U.orig = NULL,  
-                     V.fix = TRUE, pi.fix = FALSE, 
-                     n.iter = 45, MC.max = 125, tol = 1e-2, MC.seq = "exp", 
-                     significant_thres = 0.1, noise_threshold = 0.1){
-  ## hatB: G list with matrix M_j * C as the eQTL summary stats for each gene.
-  ## R: Glist with M_j * M_j matrix: LD matrix for each region.
-  ## N: C * C matrix, sample size and overlapped structure for each cell type.
-  ##    Can be C vector which assumes full overlaps
-  ## h: G * C matrix of cis-heritability.
-  ## V: C * C covariance for the noise between cell types.
+CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
+  args = list(...)
+  V.fix = ifelse("V.fix" %in% names(args), args$V.fix, TRUE)
+  pi.fix = ifelse("pi.fix" %in% names(args), args$pi.fix, FALSE)
+  n.iter = ifelse("n.iter" %in% names(args), args$h, 45)
+  MC.max = ifelse("MC.max" %in% names(args), args$MC.max, 125)
+  tol = ifelse("tol" %in% names(args), args$tol, 1e-2)
+  significant_thres = ifelse("significant_thres" %in% names(args), args$significant_thres, 1e-1)
+  noise_threshold = ifelse("noise_threshold" %in% names(args), args$noise_threshold, 1e-1)
   
-  
-  ## U.orig: t1 + t2 lists / array with matrices C * C, initial cell type correlations for EM algorithm.
-  ## pi.init: t1 + t2 + 1 vector, initial guess for prob of correlations.
-  ##          The last is prob of the delta mass of zero.
   if (is.null(Z)){
     Z = hatB / hatS
   }
@@ -39,16 +35,8 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
   hatBS = transform_Z(Z, N)
   hatB = hatBS$hatB
   hatS = hatBS$hatS
-  
  
-  if (MC.seq == "fix"){
-    MC.sim = rep(MC.max, n.iter)
-  }else if (MC.seq == "linear"){
-    MC.sim = seq(25, MC.max, length.out = n.iter) %>% round
-  }else if (MC.seq == "exp"){
-    MC.sim = ((MC.max / 60)^((1:n.iter-1) / (n.iter - 1)) * 60) %>% round
-  }
-
+  MC.sim = ((MC.max / 60)^((1:n.iter-1) / (n.iter - 1)) * 60) %>% round
   C <- ncol(hatB)
   
   if (is.null(dim(N))){
@@ -62,23 +50,26 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
   
   if (is.null(V)){
     V = diag(rep(1, C))
+  } else{
+    V = cov2cor(V)
+  }
     for (i in 1:C){
       for (j in 1:C){
         V[i, j] = V[i, j] * N[i, j] / (N[i, i] * N[j, j])
       }
     }
-  }
-  
+
   # Initialization
-  M <- nrow(R)
-  init = Initialize_pi_U(hatB, hatS, C, M)
-  
-  if (is.null(pi.init)){
-    pi.init = init$pi
-    U.orig = init$U
+  if ("pi.init" %in% names(args)){
+    pi = args$pi.init
+    U = args$U.orig
+  } else{
+    #print(hatB)
+    #print(hatS)
+    init = Initialize_pi_U(hatB, hatS, C, M = nrow(R))
+    pi = init$pi
+    U = init$U
   }
-  pi = pi.init
-  U = U.orig
   L = length(pi)
   
   
@@ -100,18 +91,8 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
     return(list(pi = 1, U = list(matrix(0, C, C)), V = V, n.iter = 0))
   }
   
-  
-  # if (!V.fix){
-  #   iRB <- vector("list", G)
-  #   for (j in 1:G){
-  #     iRB[[j]] = t(hatB[[j]]) %*% solve(R[[j]]) %*% hatB[[j]]
-  #   }
-  # }
-  
   J <- 0
   g <- list()
-
-  kk = 1
   patterns.old = names(U)
   repeated_pattern = 0
   
@@ -130,7 +111,7 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
     gBc = gB_coef(U, V)
     while (nsim < MC.sim[kk]){
       BB[, , nsim + 1] = gBupdate(B = BB[, , nsim], hatB = hatB,
-                    R = R, pi = pi, h = h,
+                    R = R, pi = pi, h = args$h,
                     TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1)
       
       nsim  = nsim + 1
@@ -282,17 +263,32 @@ CASE_train <- function(Z = NULL, R, N, hatB = NULL, hatS = NULL,
 #' @param Z M * C matrix of z scores.
 #' @param R M * M matrix of LD.
 #' @param hatB M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.
-#' @param hatB M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
+#' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
+#' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
+#' @param CASE_training A \code{"CASE_training"} object.
+#' @param ... additional arguments.
 #' @return A \code{"CASE"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
+#' \item{pvalue:}{M * C matrix, posterior probability of no eQTL effects per SNP per cell type.}
+#' \item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 #' @importFrom magrittr %>%
 #' @importFrom stats sd
 #' @export
-CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58){
+CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...){
   # Here V is V adjusted for sample sizes
   #### Testing ####
+  args = list(...)
+  MC.sim = ifelse("MC.sim" %in% names(args), args$MC.sim, 41)
+  MC.sample = ifelse("MC.sample" %in% names(args), args$MC.sample, 58)
+  
+  cat("Start Posterior Analysis.")
+  
+  U = CASE_training$U
+  V = CASE_training$V
+  pi = CASE_training$pi
+  
   if (is.null(Z)){
     Z = hatB / hatS
   }
@@ -300,8 +296,7 @@ CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sam
   hatBS = transform_Z(Z, N)
   hatB = hatBS$hatB
   hatS = hatBS$hatS
-  
-  pi = pi / sum(pi)
+
   C <- ncol(hatB)
   M <- nrow(R)
   
@@ -310,10 +305,6 @@ CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sam
     pvalue = matrix(1, M, C)
     return(list(pi = pi, U = U, V = V, pvalue = pvalue, post_mean = post_mean))
   }
-  
-  # m_split = U_split(U, pi, V)
-  # U = m_split$U
-  # pi = m_split$pi
   
   L = length(U)
   ## MC step
@@ -354,10 +345,17 @@ CASE_test <- function(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sam
 #'
 #' Obtain credible sets for any multi-trait fine-mapping results.
 #' @param pvalues (M * C),The pvalues of SNPs.
-#' @return Credible Sets
+#' @param R M * M matrix of LD.
+#' @param cor.min minimum correlation in the credible sets
+#' @param pip threshold for the sum of PIPs.
+#' @param ruled_out excluding criteria for not considering SNPs with PIP less than the threshold.
+#' @return a length C list of credible sets.
 #' @importFrom magrittr %>%
 #' @export
-get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-4){
+get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-4){
+  
+  cat("Start getting credible sets.")
+  
   C = ncol(pvalues)
   css = vector("list", C)
   R1 = R
@@ -387,7 +385,7 @@ get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out =
         inds = which(abs(R[kk, ]) >= cor.min & flag)
         if (sum(1 - p[inds]) >= pip){
           or_inds = order(p[inds])
-          or_inds = or_inds[p[inds[or_inds]] <= ruled_out]
+          or_inds = or_inds[p[inds[or_inds]] <= 1 - ruled_out]
           if (sum(1-p[inds[or_inds]]) > pip){
             best_local_sets = select_first_valid_set(1 - p[inds[or_inds]], R[inds[or_inds], inds[or_inds]],
                                                      pip, cor.min)

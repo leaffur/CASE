@@ -4,13 +4,21 @@
 \alias{get_credible_sets}
 \title{CASE Obtain Credible Sets}
 \usage{
-get_credible_sets(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1 - 1e-04)
+get_credible_sets(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-04)
 }
 \arguments{
 \item{pvalues}{(M * C),The pvalues of SNPs.}
+
+\item{R}{M * M matrix of LD.}
+
+\item{cor.min}{minimum correlation in the credible sets}
+
+\item{pip}{threshold for the sum of PIPs.}
+
+\item{ruled_out}{excluding criteria for not considering SNPs with PIP less than the threshold.}
 }
 \value{
-Credible Sets
+a length C list of credible sets.
 }
 \description{
 Obtain credible sets for any multi-trait fine-mapping results.
