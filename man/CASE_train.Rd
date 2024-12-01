@@ -4,35 +4,25 @@
 \alias{CASE_train}
 \title{CASE Model Training}
 \usage{
-CASE_train(
-  Z = NULL,
-  R,
-  N,
-  hatB = NULL,
-  hatS = NULL,
-  V = NULL,
-  h = NULL,
-  pi.init = NULL,
-  U.orig = NULL,
-  V.fix = TRUE,
-  pi.fix = FALSE,
-  n.iter = 45,
-  MC.max = 125,
-  tol = 0.01,
-  MC.seq = "exp",
-  significant_thres = 0.1,
-  noise_threshold = 0.1
-)
+CASE_train(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...)
 }
 \arguments{
 \item{Z}{M * C matrix of z scores.}
 
 \item{R}{M * M matrix of LD.}
 
-\item{hatB}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+\item{hatB}{M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.}
+
+\item{hatS}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+
+\item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
+
+\item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.}
+
+\item{...}{additional arguments.}
 }
 \value{
-A \code{"CASE"} object with the following elements:
+A \code{"CASE_training"} object with the following elements:
 \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}

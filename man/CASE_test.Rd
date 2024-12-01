@@ -4,20 +4,30 @@
 \alias{CASE_test}
 \title{CASE Model Testing}
 \usage{
-CASE_test(hatB = NULL, Z = NULL, R, N, V, U, pi, MC.sim = 41, MC.sample = 58)
+CASE_test(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...)
 }
 \arguments{
-\item{hatB}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
-
 \item{Z}{M * C matrix of z scores.}
 
 \item{R}{M * M matrix of LD.}
+
+\item{hatB}{M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.}
+
+\item{hatS}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+
+\item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
+
+\item{CASE_training}{A \code{"CASE_training"} object.}
+
+\item{...}{additional arguments.}
 }
 \value{
 A \code{"CASE"} object with the following elements:
 \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
+\item{pvalue:}{M * C matrix, posterior probability of no eQTL effects per SNP per cell type.}
+\item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 }
 \description{
 Obtain the posterior probabilities and estimates of the cis-eQTL effect sizes.

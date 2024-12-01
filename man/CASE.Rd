@@ -4,35 +4,24 @@
 \alias{CASE}
 \title{CASE Model}
 \usage{
-CASE(
-  Z = NULL,
-  R,
-  N,
-  hatB = NULL,
-  hatS = NULL,
-  V = NULL,
-  h = NULL,
-  cs = TRUE,
-  pi.init = NULL,
-  U.orig = NULL,
-  V.fix = TRUE,
-  pi.fix = FALSE,
-  n.iter = 45,
-  MC.max = 125,
-  tol = 0.01,
-  MC.seq = "exp",
-  MC.sim = 41,
-  MC.sample = 58,
-  significant_thres = 0.1,
-  noise_threshold = 0.1
-)
+CASE(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...)
 }
 \arguments{
 \item{Z}{M * C matrix of z scores.}
 
 \item{R}{M * M matrix of LD.}
 
-\item{hatB}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+\item{hatB}{M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.}
+
+\item{hatS}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
+
+\item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
+
+\item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.}
+
+\item{cs}{logical, whether to get credible sets.}
+
+\item{...}{additional arguments.}
 }
 \value{
 A \code{"CASE"} object with the following elements:
@@ -45,6 +34,32 @@ Perform Multi-trait Fine-mapping
 }
 \details{
 TBD
+}
+\examples{
+set.seed(3)
+N = 500
+M = 1000
+C = 3
+X = matrix(sample(0:2, size = N * M, replace = TRUE), N, M)
+B = matrix(0, M, C)
+B[1, ] = runif(C, 1, 2)
+B[2, 1] = runif(1, 2, 3)
+e = matrix(rnorm(N * C), N, C)
+Y = X \%*\% B + e
+
+X = scale(X)
+Y = scale(Y)
+R = cor(X)
+
+Z = hatB = hatS = matrix(0, M, 3)
+for (c in 1:3){
+  hatB[, c] <- t(X) \%*\% Y[, c] / (N - 1)
+  hatS[, c] <- sqrt((sum(Y[, c]^2)  - hatB[, c]^2 * (N - 1)) / N / (N - 2))
+  Z[, c] <- hatB[, c] / hatS[, c]
+}
+
+fit <- CASE(Z = Z, R = R, N = rep(N, 3))
+print(fit$sets)
 }
 \references{
 TBD

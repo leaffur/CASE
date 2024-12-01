@@ -4,7 +4,6 @@ transform_Z <- function(Z, N){
   if (length(dim(N)) == 2){
     N = diag(N)
   }
-  
   for (c in 1:C){
     hatB[, c] <- Z[, c] * sqrt((N[c] - 1) / N[c] / (N[c] - 1 + Z[, c]^2))
     hatS[, c] <- sqrt(1 / N[c] - hatB[, c]^2 / (N[c] - 1))
@@ -161,9 +160,9 @@ gBupdate <- function(B, hatB, R, pi, h = NULL,
       sigma0 = Sigma1[, , g]
       
       if (!is.null(h)){
-        fake_thres = rbind(sqrt(h / 40), qnorm(0.95) / sqrt(diag(TT[, , L]))) %>% apply(2, max)
+        fake_thres = rbind(sqrt(h / 40), qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L]))) %>% apply(2, max)
       } else{
-        fake_thres = qnorm(0.95) / sqrt(diag(TT[, , L]))
+        fake_thres = qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L]))
       }
       fake_idx = which(abs(mu) < fake_thres)
       mu[fake_idx] = 0
@@ -217,11 +216,13 @@ Initialize_pi_U <- function(hatB, hatS, C, M, sig_threshold = 0.1){
   
   cat("Initialize with patterns: ", patterns, "\n")
   
+  #################################################
   L = length(patterns)
   if (L > 6){
     pi = c(rep(5 / M / (L - 1), L - 1), (M - 5) / M)
+  }else{
+    pi = c(rep(1 / M, L - 1), (M - L + 1) / M)
   }
-  
   
   U = list()
   for (l in patterns){
