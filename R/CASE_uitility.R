@@ -5,12 +5,24 @@ transform_Z <- function(Z, N){
     N = diag(N)
   }
   for (c in 1:C){
-    hatB[, c] <- Z[, c] * sqrt((N[c] - 1) / N[c] / (N[c] - 1 + Z[, c]^2))
-    hatS[, c] <- sqrt(1 / N[c] - hatB[, c]^2 / (N[c] - 1))
+    hatS[, c] <- 1 / sqrt(N[c] - 1 + Z[, c]^2)
+    hatB[, c] <- Z[, c] * hatS[, c]
   }
   return(list(hatB = hatB, hatS = hatS))
 }
 
+replace_nonzero_with_mean <- function(row) {
+  # Find non-zero and non-last elements
+  non_zero_non_last_indices <- which(row != 0 & seq_along(row) != length(row))
+  
+  # Compute the mean of the non-zero and non-last elements
+  if (length(non_zero_non_last_indices) > 0) {
+    mean_value <- mean(row[non_zero_non_last_indices])
+    row[non_zero_non_last_indices] <- mean_value
+  }
+  
+  return(row)
+}
 
 select_first_valid_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
   N <- length(p)
@@ -71,19 +83,6 @@ select_first_valid_set <- function(p, R, threshold_sum = 0.95, min_corr = 0.5) {
   return(backtrack(selected = 1, current_sum = p[1], idx = 2))
 }
 
-replace_nonzero_with_mean <- function(row) {
-  # Find non-zero and non-last elements
-  non_zero_non_last_indices <- which(row != 0 & seq_along(row) != length(row))
-  
-  # Compute the mean of the non-zero and non-last elements
-  if (length(non_zero_non_last_indices) > 0) {
-    mean_value <- mean(row[non_zero_non_last_indices])
-    row[non_zero_non_last_indices] <- mean_value
-  }
-  
-  return(row)
-}
-
 #' @importFrom MASS ginv
 gB_coef <- function(U, V){
   C = nrow(U[[1]])
@@ -108,7 +107,11 @@ gB_coef <- function(U, V){
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom stats quantile rmultinom qnorm qchisq
 gBupdate <- function(B, hatB, R, pi, h = NULL,
-                     TT, TT_det, mu1, Sigma1){
+                     TT, TT_det, mu1, Sigma1, alpha = 0.05){
+  
+  if (is.null(alpha)){
+    alpha = 0.05
+  }
   
   B = B %>% as.matrix
   hatB = hatB %>% as.matrix
@@ -164,9 +167,9 @@ gBupdate <- function(B, hatB, R, pi, h = NULL,
       sigma0 = Sigma1[, , g] %>% as.matrix
       
       if (!is.null(h)){
-        fake_thres = rbind(sqrt(h / 40), qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L] %>% as.matrix))) %>% apply(2, max)
+        fake_thres = rbind(sqrt(h / 40), qnorm(1 - alpha / 2) / sqrt(diag(TT[, , L] %>% as.matrix))) %>% apply(2, max)
       } else{
-        fake_thres = qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L] %>% as.matrix))
+        fake_thres = qnorm(1 - alpha / 2) / sqrt(diag(TT[, , L] %>% as.matrix))
       }
       fake_idx = which(abs(mu) < fake_thres)
       mu[fake_idx] = 0
