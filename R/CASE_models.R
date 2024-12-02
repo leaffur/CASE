@@ -114,7 +114,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     while (nsim < MC.sim[kk]){
       BB[, , nsim + 1] = gBupdate(B = BB[, , nsim], hatB = hatB,
                     R = R, pi = pi, h = args$h,
-                    TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1)
+                    TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1, alpha = args$alpha)
       
       nsim  = nsim + 1
       gg[, nsim] = ifelse(as.matrix(BB[, , nsim]) != 0, 1, 0) %>% apply(1, paste, collapse = "")
@@ -335,7 +335,7 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
                     hatB = hatB,
                     R = R, pi = pi,
                     TT = gBc$TT, TT_det = gBc$TT_det,
-                    mu1 = gBc$mu1, Sigma1 = gBc$Sigma1)
+                    mu1 = gBc$mu1, Sigma1 = gBc$Sigma1, alpha = args$alpha)
 
       nsim  = nsim + 1
       BB[, , nsim] = gB

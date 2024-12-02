@@ -52,7 +52,7 @@ R = cor(X)
 
 Z = hatB = hatS = rep(0, M)
 hatB <- as.vector(t(X) \%*\% Y / (N - 1))
-hatS <- sqrt((sum(Y^2)  - hatB^2 * (N - 1)) / N / (N - 2))
+hatS <- sqrt((sum(Y^2) / (N - 1)  - hatB^2 ) / (N - 1))
 Z <- hatB / hatS
 
 fit <- CASE(Z = Z, R = R, N = N)
@@ -75,14 +75,14 @@ X = scale(X)
 Y = scale(Y)
 R = cor(X)
 
-Z = hatB = hatS = matrix(0, M, 3)
-for (c in 1:3){
+Z = hatB = hatS = matrix(0, M, C)
+for (c in 1:C){
   hatB[, c] <- t(X) \%*\% Y[, c] / (N - 1)
-  hatS[, c] <- sqrt((sum(Y[, c]^2)  - hatB[, c]^2 * (N - 1)) / N / (N - 2))
+  hatS[, c] <- sqrt((sum(Y[, c]^2) / (N - 1)  - hatB[, c]^2 ) / (N - 1))
   Z[, c] <- hatB[, c] / hatS[, c]
 }
 
-fit <- CASE(Z = Z, R = R, N = rep(N, 3))
+fit <- CASE(Z = Z, R = R, N = rep(N, C))
 # print(fit$sets)
 }
 \references{
