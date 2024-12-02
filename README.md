@@ -1,6 +1,6 @@
 CASE: Cell-type-specific And Shared EQTL Fine-mapping
 
-[![R-CMD-check](https://github.com/leaffur/CASE/workflows/R-CMD-check/badge.svg)](https://github.com/leaffur/CAS/actions)
+![R-CMD-check](https://github.com/leaffur/CASE/workflows/R-CMD-check/badge.svg)
 
 ================
 
