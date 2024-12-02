@@ -1,9 +1,5 @@
 CASE: Cell-type-specific And Shared EQTL Fine-mapping
 
-![R-CMD-check](https://github.com/leaffur/CASE/workflows/R-CMD-check/badge.svg)
-
-================
-
 `CASE` is a R package for multi-trait fine-mapping analysis, focusing on single-cell eQTL fine-mapping.
 
 ## 1. Installation
