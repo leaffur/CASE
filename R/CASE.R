@@ -17,6 +17,30 @@
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
 #' @examples
+#' ## A single-trait example.
+#' set.seed(3)
+#' N = 500
+#' M = 1000
+#' X = matrix(sample(0:2, size = N * M, replace = TRUE), N, M)
+#' B = rep(0, M)
+#' B[1:4] = runif(4, 1, 2)
+#' e = rnorm(N)
+#' Y = X %*% B + e
+#' 
+#' X = scale(X)
+#' Y = scale(Y)
+#' R = cor(X)
+#' 
+#' Z = hatB = hatS = rep(0, M)
+#' hatB <- as.vector(t(X) %*% Y / (N - 1))
+#' hatS <- sqrt((sum(Y^2)  - hatB^2 * (N - 1)) / N / (N - 2))
+#' Z <- hatB / hatS
+#' 
+#' fit <- CASE(Z = Z, R = R, N = N)
+#' # print(fit$sets)
+#' 
+#' 
+#' ## A multi-trait example.
 #' set.seed(3)
 #' N = 500
 #' M = 1000
@@ -40,14 +64,14 @@
 #' }
 #' 
 #' fit <- CASE(Z = Z, R = R, N = rep(N, 3))
-#' print(fit$sets)
+#' # print(fit$sets)
 #' @export
 CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...){
     t1 = Sys.time()
     if (is.null(Z)){
         Z = hatB / hatS
     }
-      
+    Z = as.matrix(Z)
     hatBS = transform_Z(Z, N)
     hatB = hatBS$hatB
     hatS = hatBS$hatS

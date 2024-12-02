@@ -20,30 +20,30 @@
 #' @export
 CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   args = list(...)
-  V.fix = ifelse("V.fix" %in% names(args), args$V.fix, TRUE)
-  pi.fix = ifelse("pi.fix" %in% names(args), args$pi.fix, FALSE)
-  n.iter = ifelse("n.iter" %in% names(args), args$h, 45)
-  MC.max = ifelse("MC.max" %in% names(args), args$MC.max, 125)
-  tol = ifelse("tol" %in% names(args), args$tol, 1e-2)
-  significant_thres = ifelse("significant_thres" %in% names(args), args$significant_thres, 1e-1)
-  noise_threshold = ifelse("noise_threshold" %in% names(args), args$noise_threshold, 1e-1)
   
   if (is.null(Z)){
     Z = hatB / hatS
   }
+  Z = as.matrix(Z)
   
   hatBS = transform_Z(Z, N)
   hatB = hatBS$hatB
   hatS = hatBS$hatS
- 
+  
+  n.iter = ifelse("n.iter" %in% names(args), args$h, 45)
+  MC.max = ifelse("MC.max" %in% names(args), args$MC.max, 125)
   MC.sim = ((MC.max / 60)^((1:n.iter-1) / (n.iter - 1)) * 60) %>% round
   C <- ncol(hatB)
   
-  if (is.null(dim(N))){
-    N = diag(N)
-    for (i in 1:(C-1)){
-      for (j in (i+1):C){
-        N[j, i] = N[i, j] = min(N[i, i], N[j, j])
+  if (is.vector(N)){
+    if (C == 1){
+      N = matrix(N)
+    }else{
+      N = diag(N)
+      for (i in 1:(C-1)){
+        for (j in (i+1):C){
+          N[j, i] = N[i, j] = min(N[i, i], N[j, j])
+        }
       }
     }
   }
@@ -53,11 +53,11 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   } else{
     V = cov2cor(V)
   }
-    for (i in 1:C){
-      for (j in 1:C){
-        V[i, j] = V[i, j] * N[i, j] / (N[i, i] * N[j, j])
-      }
+  for (i in 1:C){
+    for (j in 1:C){
+      V[i, j] = V[i, j] * N[i, j] / (N[i, i] * N[j, j])
     }
+  }
 
   # Initialization
   if ("pi.init" %in% names(args)){
@@ -76,6 +76,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   ## Train with only marginally significant SNPs
   M0 = nrow(R)
   ME_p <- 2 - 2 * pnorm(abs(hatB / hatS), 0, 1)
+  significant_thres = ifelse("significant_thres" %in% names(args), args$significant_thres, 1e-1)
   idx <- which(ME_p <= significant_thres, arr.ind = TRUE)[, 1] %>% unique
   if (length(idx) == 1){
     idx = c(idx - 1, idx, idx + 1)
@@ -88,6 +89,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   pi.in = M1 / M0
   M <- nrow(R)
   if (M1 == 0){
+    cat("No marginally significant variants.")
     return(list(pi = 1, U = list(matrix(0, C, C)), V = V, n.iter = 0))
   }
   
@@ -115,7 +117,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
                     TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1)
       
       nsim  = nsim + 1
-      gg[, nsim] = ifelse(BB[, , nsim] != 0, 1, 0) %>% apply(1, paste, collapse = "")
+      gg[, nsim] = ifelse(as.matrix(BB[, , nsim]) != 0, 1, 0) %>% apply(1, paste, collapse = "")
     }
     
     samp.ind = ceiling(MC.sim[kk] / 3):MC.sim[kk]
@@ -132,6 +134,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     L = length(patterns)
     
     if (L <= 1){
+      cat("Estimated no eQTL effects in the CASE prior fitting step.")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -140,7 +143,12 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
       for (l in seq(L-1)){
         ind = which(gg[k, samp.ind] == patterns[l]) + samp.ind[1] - 1
         if (length(ind) > 0){
-          Sigma[[k]][[l]] = tcrossprod(BB[k, , ind]) / length(ind)
+          if (C == 1){
+            Sigma[[k]][[l]] = matrix(mean((BB[k, , ind])^2))
+          }else{
+            Sigma[[k]][[l]] = tcrossprod(BB[k, , ind]) / length(ind) 
+          }
+         
         } else{
           Sigma[[k]][[l]] = matrix(0, C, C)
         }
@@ -160,6 +168,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     pi.new[L] = 1 - sum(pi.new[-L])
     
     if (length(pi) == L){
+      tol = ifelse("tol" %in% names(args), args$tol, 1e-2)
       if (max(abs(pi.new - pi) / pi) <= tol){
         break
       }
@@ -167,7 +176,11 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     
     # M-step
     # Update pi's
-    if (!pi.fix){
+    if ("pi.fix" %in% names(args)){
+      if (!args$pi.fix){
+        pi = pi.new
+      }
+    }else{
       pi = pi.new
     }
     
@@ -198,6 +211,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     }
     
     if (length(pi) <= 1){
+      cat("Estimated no eQTL effects in the CASE prior fitting step.")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -233,6 +247,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     
     L = length(U)
     if (L <= 1){
+      cat("Estimated no eQTL effects in the CASE prior fitting step.")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -280,9 +295,6 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
   # Here V is V adjusted for sample sizes
   #### Testing ####
   args = list(...)
-  MC.sim = ifelse("MC.sim" %in% names(args), args$MC.sim, 41)
-  MC.sample = ifelse("MC.sample" %in% names(args), args$MC.sample, 58)
-  
   cat("Start Posterior Analysis.")
   
   U = CASE_training$U
@@ -292,6 +304,7 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
   if (is.null(Z)){
     Z = hatB / hatS
   }
+  Z = as.matrix(Z)
   
   hatBS = transform_Z(Z, N)
   hatB = hatBS$hatB
@@ -309,6 +322,9 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
   L = length(U)
   ## MC step
   gBc = gB_coef(U, V)
+  
+  MC.sim = ifelse("MC.sim" %in% names(args), args$MC.sim, 41)
+  MC.sample = ifelse("MC.sample" %in% names(args), args$MC.sample, 58)
   pp = pm = array(0, dim = c(M, C, MC.sample))
 
   for (ll in 1:MC.sample){
@@ -325,15 +341,17 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
       BB[, , nsim] = gB
     }
 
-    pp[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:2, function(x) mean(x == 0))
-    pm[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:2, mean)
+    pp[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:((C > 1) + 1), function(x) mean(x == 0))
+    pm[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:((C > 1) + 1), mean)
 
-    if (ll == 20 & max(apply(pp[, , 1:ll], 1:2, sd)) <= 0.05){
-      break
+    if (ll == 20){
+      if (max(apply(pp[, , 1:ll], 1:((C > 1) + 1), sd)) <= 0.05){
+        break
+      }
     }
   }
-  pvalue = apply(pp[, , 1:ll], 1:2, mean)
-  post_mean = apply(pm[, , 1:ll], 1:2, mean)
+  pvalue = apply(pp[, , 1:ll], 1:((C > 1) + 1), mean)
+  post_mean = apply(pm[, , 1:ll], 1:((C > 1) + 1), mean)
 
   return(list(pi = pi, U = U, V = V, pvalue = pvalue, post_mean = post_mean))
 }
@@ -348,14 +366,14 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
 #' @param R M * M matrix of LD.
 #' @param cor.min minimum correlation in the credible sets
 #' @param pip threshold for the sum of PIPs.
-#' @param ruled_out excluding criteria for not considering SNPs with PIP less than the threshold.
+#' @param ruled_out excluding SNPs with PIPs less than the threshold.
 #' @return a length C list of credible sets.
 #' @importFrom magrittr %>%
 #' @export
 get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-4){
-  
   cat("Start getting credible sets.")
   
+  pvalues = as.matrix(pvalues)
   C = ncol(pvalues)
   css = vector("list", C)
   R1 = R

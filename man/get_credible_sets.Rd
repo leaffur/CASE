@@ -15,7 +15,7 @@ get_credible_sets(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-04)
 
 \item{pip}{threshold for the sum of PIPs.}
 
-\item{ruled_out}{excluding criteria for not considering SNPs with PIP less than the threshold.}
+\item{ruled_out}{excluding SNPs with PIPs less than the threshold.}
 }
 \value{
 a length C list of credible sets.

@@ -96,7 +96,7 @@ gB_coef <- function(U, V){
   
   for (l in 1:L){
     TT[, , l] = ginv(V + U[[l]])
-    TT_det[l] = determinant(TT[, , l], logarithm = TRUE)$modulus
+    TT_det[l] = determinant(TT[, , l] %>% as.matrix, logarithm = TRUE)$modulus
     
     mu1[, , l] = U[[l]] %*% TT[, , l]
     Sigma1[, , l] = U[[l]] - U[[l]] %*% TT[, , l] %*% U[[l]]
@@ -109,6 +109,10 @@ gB_coef <- function(U, V){
 #' @importFrom stats quantile rmultinom qnorm qchisq
 gBupdate <- function(B, hatB, R, pi, h = NULL,
                      TT, TT_det, mu1, Sigma1){
+  
+  B = B %>% as.matrix
+  hatB = hatB %>% as.matrix
+  
   C = dim(hatB)[2]
   M = nrow(B)
   L = length(pi)
@@ -157,12 +161,12 @@ gBupdate <- function(B, hatB, R, pi, h = NULL,
       B[i, ] = 0
     } else{
       mu = c(mu1[, , g] %*% res)
-      sigma0 = Sigma1[, , g]
+      sigma0 = Sigma1[, , g] %>% as.matrix
       
       if (!is.null(h)){
-        fake_thres = rbind(sqrt(h / 40), qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L]))) %>% apply(2, max)
+        fake_thres = rbind(sqrt(h / 40), qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L] %>% as.matrix))) %>% apply(2, max)
       } else{
-        fake_thres = qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L]))
+        fake_thres = qnorm(1 - 0.05 / 2) / sqrt(diag(TT[, , L] %>% as.matrix))
       }
       fake_idx = which(abs(mu) < fake_thres)
       mu[fake_idx] = 0
@@ -234,7 +238,11 @@ Initialize_pi_U <- function(hatB, hatS, C, M, sig_threshold = 0.1){
   }
   
   DD = apply(abs(hatB), 2, max)
-  U = lapply(U, function(x) (x * DD) %*% diag(DD))
+  if (length(DD) > 1){
+    U = lapply(U, function(x) (x * DD) %*% diag(DD))
+  }else{
+    U = lapply(U, function(x) x * DD^2)
+  }
   
   return(list(pi = pi, U = U))
 }
