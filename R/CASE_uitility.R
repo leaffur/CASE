@@ -233,7 +233,7 @@ Initialize_pi_U <- function(hatB, hatS, C, M, sig_threshold = 0.1){
   
   U = list()
   for (l in patterns){
-    U[[l]] = matrix(.1, C, C)
+    U[[l]] = matrix(.2, C, C)
     diag(U[[l]]) = 1
     idx = which(as.numeric(strsplit(l, "")[[1]]) == 0)
     U[[l]][idx, ] = 0

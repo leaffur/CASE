@@ -2,7 +2,7 @@
 % Please edit documentation in R/CASE.R
 \name{CASE}
 \alias{CASE}
-\title{CASE Model}
+\title{CASE}
 \usage{
 CASE(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...)
 }
