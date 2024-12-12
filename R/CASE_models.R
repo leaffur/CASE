@@ -21,6 +21,8 @@
 CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   args = list(...)
   
+  cat("Start Prior fitting.", "\n")
+  
   if (is.null(Z)){
     Z = hatB / hatS
   }
@@ -64,8 +66,6 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     pi = args$pi.init
     U = args$U.orig
   } else{
-    #print(hatB)
-    #print(hatS)
     init = Initialize_pi_U(hatB, hatS, C, M = nrow(R))
     pi = init$pi
     U = init$U
@@ -89,7 +89,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   pi.in = M1 / M0
   M <- nrow(R)
   if (M1 == 0){
-    cat("No marginally significant variants.")
+    cat("No marginally significant variants in the inputs.", "\n")
     return(list(pi = 1, U = list(matrix(0, C, C)), V = V, n.iter = 0))
   }
   
@@ -97,7 +97,8 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   g <- list()
   patterns.old = names(U)
   repeated_pattern = 0
-  
+  alpha = ifelse("alpha" %in% names(args), args$alpha, 0.05)
+
   # MCEM steps
   for (kk in 1:n.iter){
     # cat("\n iter:", kk, " ")
@@ -114,7 +115,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     while (nsim < MC.sim[kk]){
       BB[, , nsim + 1] = gBupdate(B = BB[, , nsim], hatB = hatB,
                     R = R, pi = pi, h = args$h,
-                    TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1, alpha = args$alpha)
+                    TT = gBc$TT, TT_det = gBc$TT_det, mu1 = gBc$mu1, Sigma1 = gBc$Sigma1, alpha = alpha)
       
       nsim  = nsim + 1
       gg[, nsim] = ifelse(as.matrix(BB[, , nsim]) != 0, 1, 0) %>% apply(1, paste, collapse = "")
@@ -134,7 +135,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     L = length(patterns)
     
     if (L <= 1){
-      cat("Estimated no eQTL effects in the CASE prior fitting step.")
+      cat("Estimates no eQTL effects in the CASE prior fitting step.", "\n")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -205,13 +206,12 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
       ll = which(pi < 1e-2 / M * pi.in)
     }
     if (length(ll) > 0){
-      # cat("pi delete", ll, "\n")
       U = U[-ll]
       pi = pi[-ll]
     }
     
     if (length(pi) <= 1){
-      cat("Estimated no eQTL effects in the CASE prior fitting step.")
+      cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -222,7 +222,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     ll = integer(0)
     dd = 0
     for (l in 1:(L-1)){
-      ind = which(diag(U[[l]]) <= qchisq(0.95, 1) * diag(V))
+      ind = which(diag(U[[l]]) <= qchisq(1 - alpha, 1) * diag(V))
       U[[l]][ind, ] = 0
       U[[l]][, ind] = 0
       lp = 0
@@ -240,19 +240,16 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     }
     
     if (length(ll) > 0){
-      # cat("U delete", ll, "\n")
       U = U[-ll]
       pi = pi[-ll]
     }
     
     L = length(U)
     if (L <= 1){
-      cat("Estimated no eQTL effects in the CASE prior fitting step.")
+      cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
-    # cat("\n", names(pi), "\n")
-    # print(pi)
     if (setequal(patterns.old, names(pi))){
       repeated_pattern = repeated_pattern + 1
     } else{
@@ -295,8 +292,8 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
   # Here V is V adjusted for sample sizes
   #### Testing ####
   args = list(...)
-  cat("Start Posterior Analysis.")
-  
+  cat("Start Posterior Analysis.", "\n")
+
   U = CASE_training$U
   V = CASE_training$V
   pi = CASE_training$pi
@@ -371,7 +368,7 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
 #' @importFrom magrittr %>%
 #' @export
 get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-4){
-  cat("Start getting credible sets.")
+  cat("Start getting credible sets.", "\n")
   
   pvalues = as.matrix(pvalues)
   C = ncol(pvalues)
