@@ -1,7 +1,7 @@
 Type: Package
 Package: CASE
 Title: Cell-type-specific And Shared EQTL fine-mapping
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: c(
     person("Chen", "Lin", , "c.lin@yale.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9821-2578")),
@@ -25,9 +25,9 @@ Suggests:
     testthat (>= 3.0.0),
     scales,
     ggplot2,
-    susieR
+    tidyr
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 4.0.0)
 LazyData: true
 VignetteBuilder: knitr

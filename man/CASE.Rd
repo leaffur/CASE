@@ -17,7 +17,7 @@ CASE(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...)
 
 \item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
 
-\item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.}
+\item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix representing no correlations of the error.}
 
 \item{cs}{logical, whether to get credible sets.}
 
@@ -28,6 +28,8 @@ A \code{"CASE"} object with the following elements:
 \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
+\item{pip:}{M * C matrix, posterior probability of having eQTL effects per SNP per cell type.}
+\item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 }
 \description{
 Perform Multi-trait Fine-mapping
@@ -82,7 +84,7 @@ for (c in 1:C){
   Z[, c] <- hatB[, c] / hatS[, c]
 }
 
-fit <- CASE(Z = Z, R = R, N = rep(N, C))
+fit <- CASE(Z = Z, R = R, N = N)
 # print(fit$sets)
 }
 \references{

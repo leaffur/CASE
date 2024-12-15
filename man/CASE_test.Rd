@@ -15,7 +15,7 @@ CASE_test(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...)
 
 \item{hatS}{M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.}
 
-\item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
+\item{N}{either 1 or C vector of the sample size, or C * C matrix of the sample size (diagonal) and overlaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
 
 \item{CASE_training}{A \code{"CASE_training"} object.}
 
@@ -26,7 +26,7 @@ A \code{"CASE"} object with the following elements:
 \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
-\item{pvalue:}{M * C matrix, posterior probability of no eQTL effects per SNP per cell type.}
+\item{pip:}{M * C matrix, posterior probability of having eQTL effects per SNP per cell type.}
 \item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 }
 \description{

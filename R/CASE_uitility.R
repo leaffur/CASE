@@ -3,6 +3,8 @@ transform_Z <- function(Z, N){
   hatB = hatS = Z
   if (length(dim(N)) == 2){
     N = diag(N)
+  } else if (length(N) == 1){
+    N = rep(N, C)
   }
   for (c in 1:C){
     hatS[, c] <- 1 / sqrt(N[c] - 1 + Z[, c]^2)

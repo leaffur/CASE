@@ -9,13 +9,15 @@
 #' @param hatB M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.
 #' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
 #' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
-#' @param V (optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.
+#' @param V (optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix representing no correlations of the error.
 #' @param cs logical, whether to get credible sets.
 #' @param ... additional arguments.
 #' @return A \code{"CASE"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
+#' \item{pip:}{M * C matrix, posterior probability of having eQTL effects per SNP per cell type.}
+#' \item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 #' @examples
 #' ## A single-trait example.
 #' set.seed(3)
@@ -63,7 +65,7 @@
 #'   Z[, c] <- hatB[, c] / hatS[, c]
 #' }
 #' 
-#' fit <- CASE(Z = Z, R = R, N = rep(N, C))
+#' fit <- CASE(Z = Z, R = R, N = N)
 #' # print(fit$sets)
 #' @export
 CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...){
@@ -72,6 +74,7 @@ CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, 
         Z = hatB / hatS
     }
     Z = as.matrix(Z)
+    
     hatBS = transform_Z(Z, N)
     hatB = hatBS$hatB
     hatS = hatBS$hatS
@@ -84,7 +87,7 @@ CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, 
     t2 = Sys.time()
     res$time = difftime(t2, t1, units = "secs")
     if (cs){
-        res$sets <- get_credible_sets(res$pvalue, R = R)
+        res$sets <- get_credible_sets(res$pip, R = R)
     }
     
     return(res)
