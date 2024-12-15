@@ -1,5 +1,5 @@
 ---
-title: "Introduction to CASE for multi-trait fine-mapping"
+title: "Introduction to CASE for multi-cell-type eQTL fine-mapping"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction_to_CASE}
@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-This Vignette is a draft and will be further updated.
+# This Vignette is a draft and will be further updated.
 
-First, load necessary packages.
+First, we load necessary packages.
 
 ```{r setup}
 library(CASE)
@@ -25,16 +25,16 @@ library(susieR)
 set.seed(1000)
 ```
 
+## The example data
+
 ```{r}
 data("example_data")
-X = example_data$X
-Y = example_data$Y
-B = example_data$B
+attach(example_data)
 
 N = nrow(X)
 M = ncol(X)
 C = ncol(Y)
-cat("sample size =", N, "\n",
+cat(" Sample size =", N, "\n",
     "SNP size =", M, "\n",
     "Cell type number =", C, "\n")
 ```
@@ -66,6 +66,7 @@ g2 = ggplot(df, aes(x = Var1, y = Var2, fill = corr)) +
   labs(fill = "corr")
 print(g2)
 ```
+Only SNP 10 have eQTL effects for three cell types and SNP 950 have eQTL effects for the first two cell types. 
 
 ```{r}
 print(which(B != 0, arr.ind = TRUE))
@@ -73,6 +74,7 @@ idx1 = 10
 idx2 = 950
 B[c(idx1, idx2), ]
 ```
+Check the Z scores for the causal SNPs.
 
 ```{r}
 Z = matrix(0, M, C)
@@ -83,7 +85,9 @@ for (i in 1:M){
 Z[c(idx1, idx2), ] 
 ```
 
-Run SuSiE (a single-trait fine-mapping method) seperately.
+## Fine-mapping
+
+First, we try a single-trait fine-mapping method, SuSiE (Wang et al. 2020), for each cell type separately. The results lacks power for the third cell type and for SNP 950.
 
 ```{r}
 for (c in 1:C){
@@ -92,13 +96,14 @@ for (c in 1:C){
 }
 ```
 
-Jointly studying three traits together improves the power of identifying the causal variants.
+However, CASE jointly studies three traits together to improve the power of identifying the causal variants.
 
 ```{r}
 fit <- CASE(Z = Z, R = R, N = rep(N, C))
 print(fit$sets)
 ```
 
+## Session Information
 
 ```{r}
 sessionInfo()
