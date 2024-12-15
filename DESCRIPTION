@@ -1,7 +1,7 @@
 Type: Package
 Package: CASE
 Title: Cell-type-specific And Shared EQTL fine-mapping
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person("Chen", "Lin", , "c.lin@yale.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9821-2578")),
@@ -16,12 +16,18 @@ Imports:
     magrittr,
     MASS,
     mvtnorm,
-    stats,
-    CorBin,
-    mvsusieR,
-    susieR
+    stats
 Encoding: UTF-8
 RoxygenNote: 7.3.1
 Suggests: 
-    testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    scales,
+    ggplot2,
+    susieR
 Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
+LazyData: true
+VignetteBuilder: knitr

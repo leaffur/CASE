@@ -1,0 +1,104 @@
+---
+title: "Introduction to CASE for multi-trait fine-mapping"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction_to_CASE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This Vignette is a draft and will be further updated.
+
+First, load necessary packages.
+
+```{r setup}
+library(CASE)
+library(ggplot2)
+library(susieR)
+```
+
+```{r}
+data("example_data")
+X = example_data$X
+Y = example_data$Y
+B = example_data$B
+
+N = nrow(X)
+M = ncol(X)
+C = ncol(Y)
+cat("sample size =", N, "\n",
+    "SNP size =", M, "\n",
+    "Cell type number =", C, "\n")
+```
+
+Let's have a look at how the Linkage Disequilibrium (LD) of the example data looks like.
+
+```{r}
+R = cor(X)
+
+df <- expand.grid(seq(M), seq(M))
+df$corr <- as.vector(R)
+
+g2 = ggplot(df, aes(x = Var1, y = Var2, fill = corr)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", limits = c(-1, 1),
+                       midpoint = 0, na.value = NA,
+                       guide = guide_colorbar(
+                         barwidth = 1, barheight = 7, title.position = "top", oob = scales::oob_squish
+                       )
+                       ) +
+  xlab("") + 
+  ylab("") +
+  theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        strip.background = element_rect(fill = "white", color = "white"),
+        panel.border = element_rect(colour = "black", fill = NA, 
+                                    linewidth = 1),
+        strip.text = element_text(color = "black", size = 20),
+        text = element_text(size = 20)) +
+  labs(fill = "corr")
+print(g2)
+```
+
+```{r}
+print(which(B != 0, arr.ind = TRUE))
+idx1 = 10
+idx2 = 950
+B[c(idx1, idx2), ]
+```
+
+```{r}
+Z = matrix(0, M, C)
+for (i in 1:M){
+  m1 = summary(lm(Y ~ X[, i]))
+  Z[i, ] = sapply(m1, function(x) x$coefficients[2, 3])
+}
+Z[c(idx1, idx2), ] 
+```
+
+Run SuSiE (a single-trait fine-mapping method) seperately.
+
+```{r}
+for (c in 1:C){
+  f1 = susie_rss(z = Z[, c], R = R, n = N)
+  print(f1$sets)
+}
+```
+
+Jointly studying three traits together improves the power of identifying the causal variants.
+
+```{r}
+fit <- CASE(Z = Z, R = R, N = rep(N, C))
+print(fit$sets)
+```
+
+
+```{r}
+sessionInfo()
+```
