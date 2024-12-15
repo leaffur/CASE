@@ -1,7 +1,7 @@
 ## code to prepare `example_data` dataset goes here
 library(CorBin)
 
-set.seed(1024)
+set.seed(1000)
 N = 500
 M = 1000
 C = 3

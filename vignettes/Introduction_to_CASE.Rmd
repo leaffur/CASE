@@ -22,6 +22,7 @@ First, load necessary packages.
 library(CASE)
 library(ggplot2)
 library(susieR)
+set.seed(1000)
 ```
 
 ```{r}
@@ -38,7 +39,7 @@ cat("sample size =", N, "\n",
     "Cell type number =", C, "\n")
 ```
 
-Let's have a look at how the Linkage Disequilibrium (LD) of the example data looks like.
+Let's have a look at the Linkage Disequilibrium (LD) of the example genotype.
 
 ```{r}
 R = cor(X)
