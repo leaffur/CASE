@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
 
 
 <dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.</p></dd>
+<dd><p>either 1 or C vector of the sample size, or C * C matrix of the sample size (diagonal) and overlaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.</p></dd>
 
 
 <dt id="arg-case-training">CASE_training<a class="anchor" aria-label="anchor" href="#arg-case-training"></a></dt>
@@ -101,8 +101,8 @@
 <dt>V:</dt>
 <dd><p>C * C matrix, the sample-adjusted phenotypical variance.</p></dd>
 
-<dt>pvalue:</dt>
-<dd><p>M * C matrix, posterior probability of no eQTL effects per SNP per cell type.</p></dd>
+<dt>pip:</dt>
+<dd><p>M * C matrix, posterior probability of having eQTL effects per SNP per cell type.</p></dd>
 
 <dt>post_mean:</dt>
 <dd><p>M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.</p></dd>

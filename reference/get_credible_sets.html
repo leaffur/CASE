@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
       </span>
     </div>
 
@@ -54,15 +54,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_credible_sets</span><span class="op">(</span><span class="va">pvalues</span>, <span class="va">R</span>, cor.min <span class="op">=</span> <span class="fl">0.5</span>, pip <span class="op">=</span> <span class="fl">0.95</span>, ruled_out <span class="op">=</span> <span class="fl">1e-04</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_credible_sets</span><span class="op">(</span></span>
+<span>  <span class="va">pips</span>,</span>
+<span>  <span class="va">R</span>,</span>
+<span>  cor.min <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  coverage_thres <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  ruled_out <span class="op">=</span> <span class="fl">1e-04</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
 
 
-<dl><dt id="arg-pvalues">pvalues<a class="anchor" aria-label="anchor" href="#arg-pvalues"></a></dt>
-<dd><p>(M * C),The pvalues of SNPs.</p></dd>
+<dl><dt id="arg-pips">pips<a class="anchor" aria-label="anchor" href="#arg-pips"></a></dt>
+<dd><p>(M * C),The pips of SNPs.</p></dd>
 
 
 <dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
@@ -73,12 +79,12 @@
 <dd><p>minimum correlation in the credible sets</p></dd>
 
 
-<dt id="arg-pip">pip<a class="anchor" aria-label="anchor" href="#arg-pip"></a></dt>
-<dd><p>threshold for the sum of PIPs.</p></dd>
-
-
 <dt id="arg-ruled-out">ruled_out<a class="anchor" aria-label="anchor" href="#arg-ruled-out"></a></dt>
 <dd><p>excluding SNPs with PIPs less than the threshold.</p></dd>
+
+
+<dt id="arg-coverage">coverage<a class="anchor" aria-label="anchor" href="#arg-coverage"></a></dt>
+<dd><p>threshold for the sum of PIPs.</p></dd>
 
 </dl></div>
     <div id="value">
