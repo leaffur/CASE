@@ -13,7 +13,7 @@ devtools::install_github("leaffur/CASE")
 
 ## 2. Quick Start
 
-For an introductory overview, please refer to the vignettes provided in the package.
+For an introductory overview, please refer to [this vignette](https://leaffur.github.io/CASE/articles/Introduction_to_CASE.html).
 
 After loading the package with `library(CASE)`, you can access simple examples and guidance using the `?CASE` command in R.
 
