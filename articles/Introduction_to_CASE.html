@@ -83,7 +83,8 @@ fine-mapping</h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://leaffur.github.io/CASE/" class="external-link">CASE</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/susieR" class="external-link">susieR</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_data"</span><span class="op">)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">X</span></span>
@@ -99,8 +100,8 @@ fine-mapping</h1>
 <span><span class="co">#&gt; sample size = 500 </span></span>
 <span><span class="co">#&gt;  SNP size = 1000 </span></span>
 <span><span class="co">#&gt;  Cell type number = 3</span></span></code></pre></div>
-<p>Let’s have a look at how the Linkage Disequilibrium (LD) of the
-example data looks like.</p>
+<p>Let’s have a look at the Linkage Disequilibrium (LD) of the example
+genotype.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
 <span></span>
@@ -147,9 +148,9 @@ example data looks like.</p>
 <span>  <span class="va">Z</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">m1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">Z</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">idx1</span>, <span class="va">idx2</span><span class="op">)</span>, <span class="op">]</span> </span>
-<span><span class="co">#&gt;          [,1]     [,2]      [,3]</span></span>
-<span><span class="co">#&gt; [1,] 7.466265 1.439311 2.4618934</span></span>
-<span><span class="co">#&gt; [2,] 4.668602 2.571253 0.4926479</span></span></code></pre></div>
+<span><span class="co">#&gt;          [,1]     [,2]       [,3]</span></span>
+<span><span class="co">#&gt; [1,] 5.162539 5.451293  3.7760017</span></span>
+<span><span class="co">#&gt; [2,] 4.292018 3.878442 -0.1058495</span></span></code></pre></div>
 <p>Run SuSiE (a single-trait fine-mapping method) seperately.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">c</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">C</span><span class="op">)</span><span class="op">{</span></span>
@@ -158,32 +159,36 @@ example data looks like.</p>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; $cs</span></span>
 <span><span class="co">#&gt; $cs$L1</span></span>
-<span><span class="co">#&gt; [1]  9 10 11</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cs$L2</span></span>
-<span><span class="co">#&gt;  [1] 939 940 941 942 943 944 945 946 947 948 949 950 951 952 953 954 955 956 957</span></span>
-<span><span class="co">#&gt; [20] 958 959 960 961 962 963 964 965</span></span>
+<span><span class="co">#&gt; [1]  4  6  7  8  9 10 11</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $purity</span></span>
 <span><span class="co">#&gt;    min.abs.corr mean.abs.corr median.abs.corr</span></span>
-<span><span class="co">#&gt; L1    0.9153209     0.9400196       0.9305205</span></span>
-<span><span class="co">#&gt; L2    0.6119001     0.8440885       0.8546488</span></span>
+<span><span class="co">#&gt; L1    0.7060233     0.8630268       0.8730057</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cs_index</span></span>
-<span><span class="co">#&gt; [1] 1 2</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $coverage</span></span>
-<span><span class="co">#&gt; [1] 0.9887018 0.9509368</span></span>
+<span><span class="co">#&gt; [1] 0.9604853</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $requested_coverage</span></span>
 <span><span class="co">#&gt; [1] 0.95</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cs</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; $cs$L1</span></span>
+<span><span class="co">#&gt; [1]  8  9 10 11 12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $purity</span></span>
+<span><span class="co">#&gt;    min.abs.corr mean.abs.corr median.abs.corr</span></span>
+<span><span class="co">#&gt; L1    0.8356723     0.9160276       0.9247528</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cs_index</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $coverage</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; [1] 0.9613424</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $requested_coverage</span></span>
 <span><span class="co">#&gt; [1] 0.95</span></span>
@@ -201,48 +206,53 @@ identifying the causal variants.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CASE.html">CASE</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="va">Z</span>, R <span class="op">=</span> <span class="va">R</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">C</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Start Prior fitting. </span></span>
-<span><span class="co">#&gt; Initialize with patterns:  100 010 001 111 000 </span></span>
+<span><span class="co">#&gt; Initialize with patterns:  100 110 111 010 001 000 </span></span>
 <span><span class="co">#&gt; Start Posterior Analysis. </span></span>
 <span><span class="co">#&gt; Start getting credible sets.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sets</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$cs</span></span>
 <span><span class="co">#&gt; [[1]]$cs[[1]]</span></span>
-<span><span class="co">#&gt; [1] 10  9 11  8</span></span>
+<span><span class="co">#&gt; [1] 10 11  9</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[1]]$cs[[2]]</span></span>
-<span><span class="co">#&gt;  [1] 950 949 947 951 948 952 946 954 945 959</span></span>
+<span><span class="co">#&gt; [1] 950 951 947 949 948 945</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[1]]$purity_min_cor</span></span>
-<span><span class="co">#&gt; [1] 0.8860574 0.7663646</span></span>
+<span><span class="co">#&gt; [1] 0.9314139 0.8914860</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[1]]$coverage</span></span>
-<span><span class="co">#&gt; [1] 1.0000000 0.9550493</span></span>
+<span><span class="co">#&gt; [1] 0.9655172 0.9532020</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; [[2]]$cs</span></span>
-<span><span class="co">#&gt; list()</span></span>
+<span><span class="co">#&gt; [[2]]$cs[[1]]</span></span>
+<span><span class="co">#&gt; [1] 10 11  9</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]$cs[[2]]</span></span>
+<span><span class="co">#&gt; [1] 950 951 947 949 948 945</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$purity_min_cor</span></span>
-<span><span class="co">#&gt; numeric(0)</span></span>
+<span><span class="co">#&gt; [1] 0.9314139 0.8914860</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$coverage</span></span>
-<span><span class="co">#&gt; numeric(0)</span></span>
+<span><span class="co">#&gt; [1] 0.9655172 0.9532020</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
 <span><span class="co">#&gt; [[3]]$cs</span></span>
 <span><span class="co">#&gt; [[3]]$cs[[1]]</span></span>
-<span><span class="co">#&gt; [1] 10  9 11  8</span></span>
+<span><span class="co">#&gt; [1] 10 11  9</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]$purity_min_cor</span></span>
-<span><span class="co">#&gt; [1] 0.8860574</span></span>
+<span><span class="co">#&gt; [1] 0.9314139</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]$coverage</span></span>
-<span><span class="co">#&gt; [1] 0.9802956</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.9630542</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.2 (2024-10-31)</span></span>
