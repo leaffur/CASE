@@ -21,7 +21,7 @@ First, we load necessary packages.
 ```{r setup}
 library(CASE)
 library(ggplot2)
-library(susieR)
+library(tidyr)
 set.seed(1000)
 ```
 
@@ -66,7 +66,8 @@ g2 = ggplot(df, aes(x = Var1, y = Var2, fill = corr)) +
   labs(fill = "corr")
 print(g2)
 ```
-Only SNP 10 have eQTL effects for three cell types and SNP 950 have eQTL effects for the first two cell types. 
+
+Only SNP 10 and SNP 950 have eQTL effects for all three cell types and for the first two cell types, respectively. 
 
 ```{r}
 print(which(B != 0, arr.ind = TRUE))
@@ -82,24 +83,51 @@ for (i in 1:M){
   m1 = summary(lm(Y ~ X[, i]))
   Z[i, ] = sapply(m1, function(x) x$coefficients[2, 3])
 }
-Z[c(idx1, idx2), ] 
+Z[c(idx1, idx2), ]
+```
+
+Visualization of the Z scores for three cell types. The true eQTLs were surrounded with green circles. The dashed grey and red lines are for nominal significance ($\pm 1.96$) and significance after Bonferroni adjustment ($\pm 4.055$).
+
+```{r}
+df <- as.data.frame(Z)
+colnames(df) = paste0("Cell_type_", 1:3)
+df$SNP <- 1:nrow(df)
+
+df_long <- pivot_longer(df, 
+                        cols = starts_with("Cell_type"), 
+                        names_to = "Variable", 
+                        values_to = "Z")
+df_long$Highlight <- with(df_long, 
+  (SNP == 10) | 
+  (SNP == 950 & Variable != "Cell_type_3")
+)
+
+ggplot(df_long, aes(x = SNP, y = Z)) +
+  geom_point() +
+  geom_point(data = subset(df_long, Highlight), 
+             aes(x = SNP, y = Z), 
+             color = "green", size = 4, shape = 1) +
+  geom_hline(yintercept = c(1.96, -1.96), linetype = "dashed", color = "grey") +
+  geom_hline(yintercept = c(4.055, -4.055), linetype = "dashed", color = "red") +
+  facet_wrap(~ Variable) + 
+  theme_minimal()
 ```
 
 ## Fine-mapping
 
-First, we try a single-trait fine-mapping method, SuSiE (Wang et al. 2020), for each cell type separately. The results lacks power for the third cell type and for SNP 950.
+First, we try CASE fine-mapping for each cell type separately. The results lack power for the third cell type and for SNP 950.
 
 ```{r}
 for (c in 1:C){
-  f1 = susie_rss(z = Z[, c], R = R, n = N)
+  f1 = CASE(Z = Z[, c], R = R, N = N)
   print(f1$sets)
 }
 ```
 
-However, CASE jointly studies three traits together to improve the power of identifying the causal variants.
+However, CASE jointly studies three cell types together to improve the power of identifying the causal variants.
 
 ```{r}
-fit <- CASE(Z = Z, R = R, N = rep(N, C))
+fit <- CASE(Z = Z, R = R, N = N)
 print(fit$sets)
 ```
 

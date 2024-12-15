@@ -27,28 +27,30 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     Z = hatB / hatS
   }
   Z = as.matrix(Z)
-  
-  hatBS = transform_Z(Z, N)
-  hatB = hatBS$hatB
-  hatS = hatBS$hatS
-  
+
   n.iter = ifelse("n.iter" %in% names(args), args$h, 45)
   MC.max = ifelse("MC.max" %in% names(args), args$MC.max, 125)
   MC.sim = ((MC.max / 60)^((1:n.iter-1) / (n.iter - 1)) * 60) %>% round
-  C <- ncol(hatB)
+  C <- ncol(Z)
   
   if (is.vector(N)){
     if (C == 1){
       N = matrix(N)
-    }else{
+    }else if (length(N) == C){
       N = diag(N)
       for (i in 1:(C-1)){
         for (j in (i+1):C){
           N[j, i] = N[i, j] = min(N[i, i], N[j, j])
         }
       }
+    }else if (length(N) == 1){
+      N = matrix(N, C, C)
     }
   }
+
+  hatBS = transform_Z(Z, N)
+  hatB = hatBS$hatB
+  hatS = hatBS$hatS
   
   if (is.null(V)){
     V = diag(rep(1, C))
@@ -276,14 +278,14 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
 #' @param R M * M matrix of LD.
 #' @param hatB M * C matrix of the estimated effects. Alternative summary data (together with hatS) to be provided instead of Z.
 #' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
-#' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
+#' @param N either 1 or C vector of the sample size, or C * C matrix of the sample size (diagonal) and overlaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
 #' @param CASE_training A \code{"CASE_training"} object.
 #' @param ... additional arguments.
 #' @return A \code{"CASE"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
 #' \item{U:}{L-list of C * C matrix, the prior covariances of sharing patterns.}
 #' \item{V:}{C * C matrix, the sample-adjusted phenotypical variance.}
-#' \item{pvalue:}{M * C matrix, posterior probability of no eQTL effects per SNP per cell type.}
+#' \item{pip:}{M * C matrix, posterior probability of having eQTL effects per SNP per cell type.}
 #' \item{post_mean:}{M * C matrix, average posterior estimates of eQTL effects per SNP per cell type.}
 #' @importFrom magrittr %>%
 #' @importFrom stats sd
@@ -338,7 +340,7 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
       BB[, , nsim] = gB
     }
 
-    pp[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:((C > 1) + 1), function(x) mean(x == 0))
+    pp[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:((C > 1) + 1), function(x) mean(x != 0))
     pm[, , ll] = apply(BB[, , -(1:ceiling(MC.sim * 0.3))], 1:((C > 1) + 1), mean)
 
     if (ll == 20){
@@ -347,10 +349,10 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
       }
     }
   }
-  pvalue = apply(pp[, , 1:ll], 1:((C > 1) + 1), mean)
+  pip = apply(pp[, , 1:ll], 1:((C > 1) + 1), mean)
   post_mean = apply(pm[, , 1:ll], 1:((C > 1) + 1), mean)
 
-  return(list(pi = pi, U = U, V = V, pvalue = pvalue, post_mean = post_mean))
+  return(list(pi = pi, U = U, V = V, pip = pip, post_mean = post_mean))
 }
 
 
@@ -359,26 +361,26 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
 #' CASE Obtain Credible Sets
 #'
 #' Obtain credible sets for any multi-trait fine-mapping results.
-#' @param pvalues (M * C),The pvalues of SNPs.
+#' @param pips (M * C),The pips of SNPs.
 #' @param R M * M matrix of LD.
 #' @param cor.min minimum correlation in the credible sets
-#' @param pip threshold for the sum of PIPs.
+#' @param coverage_thres threshold for the sum of PIPs.
 #' @param ruled_out excluding SNPs with PIPs less than the threshold.
 #' @return a length C list of credible sets.
 #' @importFrom magrittr %>%
 #' @export
-get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out = 1e-4){
+get_credible_sets <- function(pips, R, cor.min = 0.5, coverage_thres = 0.95, ruled_out = 1e-4){
   cat("Start getting credible sets.", "\n")
   
-  pvalues = as.matrix(pvalues)
-  C = ncol(pvalues)
+  pips = as.matrix(pips)
+  C = ncol(pips)
   css = vector("list", C)
   R1 = R
   
   for (ct in 1:C){
-    p = pvalues[, ct]
+    p = pips[, ct]
     
-    or = order(p)
+    or = order(p, decreasing = TRUE)
     cs = list()
     coverage = numeric(0)
     purity = numeric(0)
@@ -390,24 +392,24 @@ get_credible_sets <- function(pvalues, R, cor.min = 0.5, pip = 0.95, ruled_out =
         break
       }
       
-      if (p[kk] <= 1 - pip){
+      if (p[kk] >= coverage_thres){
         L = L + 1
         cs[[L]] = kk
         flag[cs[[L]]] = FALSE
         purity[L] = 1
-        coverage[L] = 1 - p[kk]
+        coverage[L] = p[kk]
       } else{
         inds = which(abs(R[kk, ]) >= cor.min & flag)
-        if (sum(1 - p[inds]) >= pip){
+        if (sum(p[inds]) >= coverage_thres){
           or_inds = order(p[inds])
-          or_inds = or_inds[p[inds[or_inds]] <= 1 - ruled_out]
-          if (sum(1-p[inds[or_inds]]) > pip){
-            best_local_sets = select_first_valid_set(1 - p[inds[or_inds]], R[inds[or_inds], inds[or_inds]],
-                                                     pip, cor.min)
+          or_inds = or_inds[p[inds[or_inds]] >= ruled_out]
+          if (sum(p[inds[or_inds]]) > coverage_thres){
+            best_local_sets = select_first_valid_set(p[inds[or_inds]], R[inds[or_inds], inds[or_inds]],
+                                                     coverage_thres, cor.min)
             if (!is.null(best_local_sets)){
               L = L + 1
               cs[[L]] = inds[or_inds[best_local_sets]]
-              coverage[L] = min(1, sum(1 - p[cs[[L]]]))
+              coverage[L] = min(1, sum(p[cs[[L]]]))
               mat = abs(R[cs[[L]], cs[[L]]])
               purity[L] = min(mat[upper.tri(mat)])
               flag[cs[[L]]] = FALSE
