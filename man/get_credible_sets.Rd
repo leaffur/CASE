@@ -19,9 +19,9 @@ get_credible_sets(
 
 \item{cor.min}{minimum correlation in the credible sets}
 
-\item{ruled_out}{excluding SNPs with PIPs less than the threshold.}
+\item{coverage_thres}{threshold for the sum of PIPs.}
 
-\item{coverage}{threshold for the sum of PIPs.}
+\item{ruled_out}{excluding SNPs with PIPs less than the threshold.}
 }
 \value{
 a length C list of credible sets.
