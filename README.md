@@ -4,6 +4,8 @@
 
 ## 1. Installation
 
+`CASE` can be installed from the [Github Repo](https://github.com/leaffur/CASE).
+
 ``` r
 # Install the devtools package if you haven't already
 # install.packages("devtools")
