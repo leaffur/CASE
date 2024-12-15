@@ -1,11 +1,14 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/Introduction_to_CASE.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/CASE.html</loc></url>
 <url><loc>/reference/CASE_test.html</loc></url>
 <url><loc>/reference/CASE_train.html</loc></url>
+<url><loc>/reference/example_data.html</loc></url>
 <url><loc>/reference/get_credible_sets.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 </urlset>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -41,6 +41,18 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/Introduction_to_CASE.html">Introduction to CASE for multi-trait fine-mapping</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -58,18 +70,22 @@
 <div class="section level1">
 <div class="page-header"><h1 id="case-cell-type-specific-and-shared-eqtl-fine-mapping">CASE: Cell-type-specific And Shared EQTL Fine-mapping<a class="anchor" aria-label="anchor" href="#case-cell-type-specific-and-shared-eqtl-fine-mapping"></a>
 </h1></div>
-<p><code>CASE</code> is a R package for multi-trait fine-mapping analysis, focusing on single-cell eQTL fine-mapping.</p>
+<p><code>CASE</code> is an R package designed for multi-trait fine-mapping analysis, with a particular focus on single-cell eQTL fine-mapping.</p>
 <div class="section level2">
 <h2 id="id_1-installation">1. Installation<a class="anchor" aria-label="anchor" href="#id_1-installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#install.packages("devtools")</span></span>
+<code class="sourceCode R"><span><span class="co"># Install the devtools package if you haven't already</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"leaffur/CASE"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="id_2-quick-start">2. Quick Start<a class="anchor" aria-label="anchor" href="#id_2-quick-start"></a>
 </h2>
-<p>After <code><a href="https://leaffur.github.io/CASE/" class="external-link">library(CASE)</a></code> in R, please use <code><a href="reference/CASE.html">?CASE</a></code> command for simple examples.</p>
+<p>For an introductory overview, please refer to the vignettes provided in the package.</p>
+<p>After loading the package with <code><a href="https://leaffur.github.io/CASE/" class="external-link">library(CASE)</a></code>, you can access simple examples and guidance using the <code><a href="reference/CASE.html">?CASE</a></code> command in R.</p>
+<p>This is an early version of CASE, and we welcome any feedback or suggestions for improvement.</p>
 </div>
 </div>
   </div>
