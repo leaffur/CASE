@@ -388,7 +388,7 @@ get_credible_sets <- function(pips, R, cor.min = 0.5, coverage_thres = 0.95, rul
     flag = rep(TRUE, nrow(R))
     
     for (kk in or){
-      if (p[kk] > 0.95){
+      if (p[kk] < 0.05){
         break
       }
       
