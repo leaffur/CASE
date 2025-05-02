@@ -401,7 +401,7 @@ get_credible_sets <- function(pips, R, cor.min = 0.5, coverage_thres = 0.95, rul
       } else{
         inds = which(abs(R[kk, ]) >= cor.min & flag)
         if (sum(p[inds]) >= coverage_thres){
-          or_inds = order(p[inds])
+          or_inds = order(p[inds], decreasing = TRUE)
           or_inds = or_inds[p[inds[or_inds]] >= ruled_out]
           if (sum(p[inds[or_inds]]) > coverage_thres){
             best_local_sets = select_first_valid_set(p[inds[or_inds]], R[inds[or_inds], inds[or_inds]],
