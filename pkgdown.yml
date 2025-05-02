@@ -1,6 +1,6 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   Introduction_to_CASE: Introduction_to_CASE.html
-last_built: 2025-04-27T00:49Z
+last_built: 2025-05-02T04:30Z
