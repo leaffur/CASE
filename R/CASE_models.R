@@ -138,6 +138,9 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     
     if (L <= 1){
       cat("Estimates no eQTL effects in the CASE prior fitting step.", "\n")
+      pi = 1
+      names(pi) = patterns
+      U = U[length(U)]
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -313,9 +316,8 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
   M <- nrow(R)
   
   if (length(pi) <= 1){
-    post_mean = matrix(0, M, C)
-    pvalue = matrix(1, M, C)
-    return(list(pi = pi, U = U, V = V, pvalue = pvalue, post_mean = post_mean))
+    post_mean = pip = matrix(0, M, C)
+    return(list(pi = pi, U = U, V = V, pip = pip, post_mean = post_mean))
   }
   
   L = length(U)
