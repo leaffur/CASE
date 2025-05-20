@@ -20,3 +20,7 @@ For an introductory overview, please refer to [this vignette](https://leaffur.gi
 After loading the package with `library(CASE)`, you can access simple examples and guidance using the `?CASE` command in R.
 
 This is an early version of CASE, and we welcome any feedback or suggestions for improvement.
+
+## 3. Reference
+
+  - *Lin, C. et al. (2025). Leveraging cell-type specificity and similarity improves single-cell eQTL fine-mapping. bioRxiv.* [Link](https://doi.org/10.1101/2025.03.05.641709).
