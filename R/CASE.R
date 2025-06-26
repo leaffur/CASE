@@ -10,7 +10,8 @@
 #' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
 #' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
 #' @param V (optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix representing no correlations of the error.
-#' @param cs logical, whether to get credible sets.
+#' @param cs (optional) logical, whether to get credible sets. Default = TRUE.
+#' @param verbose (optional) logical, whether to print logging information. Default = TRUE.
 #' @param ... additional arguments.
 #' @return A \code{"CASE"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
