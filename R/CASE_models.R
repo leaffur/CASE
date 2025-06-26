@@ -10,6 +10,7 @@
 #' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
 #' @param N either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
 #' @param V (optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.
+#' @param verbose (optional) logical, whether to print logging information. Default = TRUE.
 #' @param ... additional arguments.
 #' @return A \code{"CASE_training"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
@@ -18,11 +19,12 @@
 #' @importFrom magrittr %>%
 #' @importFrom stats pnorm qchisq cov2cor
 #' @export
-CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
+CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, verbose = TRUE, ...){
   args = list(...)
-  
-  cat("Start Prior fitting.", "\n")
-  
+
+  if (verbose){
+    cat("Start Prior fitting.", "\n")
+  }
   if (is.null(Z)){
     Z = hatB / hatS
   }
@@ -91,7 +93,9 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
   pi.in = M1 / M0
   M <- nrow(R)
   if (M1 == 0){
-    cat("No marginally significant variants in the inputs.", "\n")
+    if (verbose){
+      cat("No marginally significant variants in the inputs.", "\n")
+    }
     return(list(pi = 1, U = list(matrix(0, C, C)), V = V, n.iter = 0))
   }
   
@@ -103,8 +107,6 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
 
   # MCEM steps
   for (kk in 1:n.iter){
-    # cat("\n iter:", kk, " ")
-
     # E-step
     ## MC step
     # init
@@ -137,7 +139,9 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     L = length(patterns)
     
     if (L <= 1){
-      cat("Estimates no eQTL effects in the CASE prior fitting step.", "\n")
+      if (verbose){
+        cat("Estimates no eQTL effects in the CASE prior fitting step.", "\n")
+      }
       pi = 1
       names(pi) = patterns
       U = U[length(U)]
@@ -216,7 +220,9 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     }
     
     if (length(pi) <= 1){
-      cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
+      if (verbose){ 
+        cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
+      }
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -251,7 +257,9 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
     
     L = length(U)
     if (L <= 1){
-      cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
+      if (verbose){ 
+        cat("Estimated no eQTL effects in the CASE prior fitting step.", "\n")
+      }
       return(list(pi = pi, U = U, V = V, n.iter = kk, pi.in = pi.in, M1 = M1))
     }
     
@@ -283,6 +291,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
 #' @param hatS M * C matrix of standard errors of the estimated effects. Alternative summary data (together with hatB) to be provided instead of Z.
 #' @param N either 1 or C vector of the sample size, or C * C matrix of the sample size (diagonal) and overlaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.
 #' @param CASE_training A \code{"CASE_training"} object.
+#' @param verbose (optional) logical, whether to print logging information. Default = TRUE.
 #' @param ... additional arguments.
 #' @return A \code{"CASE"} object with the following elements:
 #' \item{pi:}{L-vector, the prior probabilities of sharing patterns.}
@@ -293,12 +302,14 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...){
 #' @importFrom magrittr %>%
 #' @importFrom stats sd
 #' @export
-CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...){
+CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, verbose = TRUE, ...){
   # Here V is V adjusted for sample sizes
   #### Testing ####
   args = list(...)
-  cat("Start Posterior Analysis.", "\n")
-
+  if (verbose){ 
+    cat("Start Posterior Analysis.", "\n")
+  }
+  
   U = CASE_training$U
   V = CASE_training$V
   pi = CASE_training$pi
@@ -365,15 +376,17 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, .
 #' Obtain credible sets for any multi-trait fine-mapping results.
 #' @param pips (M * C),The pips of SNPs.
 #' @param R M * M matrix of LD.
+#' @param verbose (optional) logical, whether to print logging information. Default = TRUE.
 #' @param cor.min minimum correlation in the credible sets
 #' @param coverage_thres threshold for the sum of PIPs.
 #' @param ruled_out excluding SNPs with PIPs less than the threshold.
 #' @return a length C list of credible sets.
 #' @importFrom magrittr %>%
 #' @export
-get_credible_sets <- function(pips, R, cor.min = 0.5, coverage_thres = 0.95, ruled_out = 1e-4){
-  cat("Start getting credible sets.", "\n")
-  
+get_credible_sets <- function(pips, R, verbose = TRUE, cor.min = 0.5, coverage_thres = 0.95, ruled_out = 1e-4){
+  if (verbose){   
+    cat("Start getting credible sets.", "\n")
+  }
   pips = as.matrix(pips)
   C = ncol(pips)
   css = vector("list", C)
