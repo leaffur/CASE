@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -54,7 +54,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE</span><span class="op">(</span>Z <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">R</span>, hatB <span class="op">=</span> <span class="cn">NULL</span>, hatS <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">N</span>, V <span class="op">=</span> <span class="cn">NULL</span>, cs <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CASE</span><span class="op">(</span></span>
+<span>  Z <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">R</span>,</span>
+<span>  hatB <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hatS <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">N</span>,</span>
+<span>  V <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,7 +96,11 @@
 
 
 <dt id="arg-cs">cs<a class="anchor" aria-label="anchor" href="#arg-cs"></a></dt>
-<dd><p>logical, whether to get credible sets.</p></dd>
+<dd><p>(optional) logical, whether to get credible sets. Default = TRUE.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>(optional) logical, whether to print logging information. Default = TRUE.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

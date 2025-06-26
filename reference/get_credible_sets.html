@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -57,6 +57,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_credible_sets</span><span class="op">(</span></span>
 <span>  <span class="va">pips</span>,</span>
 <span>  <span class="va">R</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cor.min <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  coverage_thres <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  ruled_out <span class="op">=</span> <span class="fl">1e-04</span></span>
@@ -73,6 +74,10 @@
 
 <dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
 <dd><p>M * M matrix of LD.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>(optional) logical, whether to print logging information. Default = TRUE.</p></dd>
 
 
 <dt id="arg-cor-min">cor.min<a class="anchor" aria-label="anchor" href="#arg-cor-min"></a></dt>
