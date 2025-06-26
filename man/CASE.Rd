@@ -4,7 +4,17 @@
 \alias{CASE}
 \title{CASE}
 \usage{
-CASE(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...)
+CASE(
+  Z = NULL,
+  R,
+  hatB = NULL,
+  hatS = NULL,
+  N,
+  V = NULL,
+  cs = TRUE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{Z}{M * C matrix of z scores.}
@@ -19,7 +29,9 @@ CASE(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...)
 
 \item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix representing no correlations of the error.}
 
-\item{cs}{logical, whether to get credible sets.}
+\item{cs}{(optional) logical, whether to get credible sets. Default = TRUE.}
+
+\item{verbose}{(optional) logical, whether to print logging information. Default = TRUE.}
 
 \item{...}{additional arguments.}
 }

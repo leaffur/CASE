@@ -88,7 +88,7 @@ CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, 
     t2 = Sys.time()
     res$time = difftime(t2, t1, units = "secs")
     if (cs){
-        res$sets <- get_credible_sets(res$pip, R = R, verbose = verbose)
+      res$sets <- get_credible_sets(res$pip, R = R, verbose = verbose)
     }
     
     return(res)
