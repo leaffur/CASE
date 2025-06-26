@@ -68,7 +68,7 @@
 #' fit <- CASE(Z = Z, R = R, N = N)
 #' # print(fit$sets)
 #' @export
-CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, ...){
+CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, verbose = TRUE, ...){
     t1 = Sys.time()
     if (is.null(Z)){
         Z = hatB / hatS
@@ -81,13 +81,13 @@ CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, 
     
     # V = estimate_null_correlation_simple(mash_set_data(do.call(rbind, raw.data$hatB), do.call(rbind, raw.data$hatS)))
 
-    m1 <- CASE_train(hatB = hatB, hatS = hatS, V = V, R = R, N = N, Z = NULL, ...)
+    m1 <- CASE_train(hatB = hatB, hatS = hatS, V = V, R = R, N = N, Z = NULL, verbose = verbose, ...)
     
-    res <- CASE_test(hatB = hatB, hatS = hatS, R = R, N = N, CASE_training = m1, Z = NULL, ...)
+    res <- CASE_test(hatB = hatB, hatS = hatS, R = R, N = N, CASE_training = m1, Z = NULL, verbose = verbose, ...)
     t2 = Sys.time()
     res$time = difftime(t2, t1, units = "secs")
     if (cs){
-        res$sets <- get_credible_sets(res$pip, R = R)
+        res$sets <- get_credible_sets(res$pip, R = R, verbose = verbose)
     }
     
     return(res)
