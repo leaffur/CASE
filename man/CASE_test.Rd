@@ -4,7 +4,16 @@
 \alias{CASE_test}
 \title{CASE Model Testing}
 \usage{
-CASE_test(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...)
+CASE_test(
+  Z = NULL,
+  R,
+  hatB = NULL,
+  hatS = NULL,
+  N,
+  CASE_training,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{Z}{M * C matrix of z scores.}
@@ -18,6 +27,8 @@ CASE_test(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, ...)
 \item{N}{either 1 or C vector of the sample size, or C * C matrix of the sample size (diagonal) and overlaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
 
 \item{CASE_training}{A \code{"CASE_training"} object.}
+
+\item{verbose}{(optional) logical, whether to print logging information. Default = TRUE.}
 
 \item{...}{additional arguments.}
 }

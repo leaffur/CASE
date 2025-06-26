@@ -7,6 +7,7 @@
 get_credible_sets(
   pips,
   R,
+  verbose = TRUE,
   cor.min = 0.5,
   coverage_thres = 0.95,
   ruled_out = 1e-04
@@ -16,6 +17,8 @@ get_credible_sets(
 \item{pips}{(M * C),The pips of SNPs.}
 
 \item{R}{M * M matrix of LD.}
+
+\item{verbose}{(optional) logical, whether to print logging information. Default = TRUE.}
 
 \item{cor.min}{minimum correlation in the credible sets}
 

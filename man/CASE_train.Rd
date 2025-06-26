@@ -4,7 +4,16 @@
 \alias{CASE_train}
 \title{CASE Model Training}
 \usage{
-CASE_train(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...)
+CASE_train(
+  Z = NULL,
+  R,
+  hatB = NULL,
+  hatS = NULL,
+  N,
+  V = NULL,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{Z}{M * C matrix of z scores.}
@@ -18,6 +27,8 @@ CASE_train(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, ...)
 \item{N}{either C vector of the sample size, or C * C matrix of the sample size (diagonal) and ovelaps  (off-diagonal). If provided with a vector, CASE assumes that each pair of traits overlaps with their minimal sample size.}
 
 \item{V}{(optional) C * C covariance (correlation) matrix for the noise between traits. If not provided, the default is an identity matrix.}
+
+\item{verbose}{(optional) logical, whether to print logging information. Default = TRUE.}
 
 \item{...}{additional arguments.}
 }
