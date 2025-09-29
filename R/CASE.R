@@ -81,14 +81,30 @@ CASE <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, cs = TRUE, 
     hatS = hatBS$hatS
     
     # V = estimate_null_correlation_simple(mash_set_data(do.call(rbind, raw.data$hatB), do.call(rbind, raw.data$hatS)))
-
-    m1 <- CASE_train(hatB = hatB, hatS = hatS, V = V, R = R, N = N, Z = NULL, verbose = verbose, ...)
+    sump = 2 - 2 * pnorm(abs(hatB / hatS))
+    sumfdr = apply(sump, 2, function(x) p.adjust(x, method = "fdr"))
+    C = ncol(sumfdr)
+    
+    # no strong signals in all cell types, or low SNP numbers 
+    if (sum(sumfdr <= 0.2) == 0){
+      if (verbose){
+        cat("No FDR-significant variants in the inputs.", "\n")
+      }
+      m1 = list(pi = 1, n.iter = 0)
+    } else if (nrow(sump) <= 20){
+      if (verbose){
+        cat("Too few SNPs in the data (<=20).", "\n")
+      }
+      m1 = list(pi = 1, n.iter = 0)
+    } else{
+      m1 <- CASE_train(hatB = hatB, hatS = hatS, V = V, R = R, N = N, Z = NULL, verbose = verbose, ...)
+    }
     
     res <- CASE_test(hatB = hatB, hatS = hatS, R = R, N = N, CASE_training = m1, Z = NULL, verbose = verbose, ...)
     t2 = Sys.time()
     res$time = difftime(t2, t1, units = "secs")
     if (cs){
-      res$sets <- get_credible_sets(res$pip, R = R, verbose = verbose)
+      res$sets <- get_credible_sets(pips = res$pip, R = R, verbose = verbose)
     }
     
     return(res)
