@@ -80,10 +80,17 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, verbo
   ## Train with only marginally significant SNPs
   M0 = nrow(R)
   ME_p <- 2 - 2 * pnorm(abs(hatB / hatS), 0, 1)
-  significant_thres = ifelse("significant_thres" %in% names(args), args$significant_thres, 1e-1)
-  idx <- which(ME_p <= significant_thres, arr.ind = TRUE)[, 1] %>% unique
+  significant_thres = ifelse("significant_thres" %in% names(args), 
+                             args$significant_thres, 
+                             ifelse(sqrt(6) / sqrt(diag(N)) >= 0.05, sqrt(6) / sqrt(diag(N)), 0.05))
+  if (C == 1){
+    idx <- which(ME_p <= significant_thres)
+  } else{
+    idx <- which(t(apply(ME_p, 1, function(x) x <= significant_thres)), arr.ind = TRUE)[, 1] %>% unique
+  }
+  
   if (length(idx) == 1){
-    idx = c(idx - 1, idx, idx + 1)
+    idx = idx + (-2):2
     idx = idx[idx >= 1 & idx <= nrow(hatB)]
   }
   hatB = hatB[idx, ]
@@ -96,7 +103,7 @@ CASE_train <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, V = NULL, verbo
     if (verbose){
       cat("No marginally significant variants in the inputs.", "\n")
     }
-    return(list(pi = 1, U = list(matrix(0, C, C)), V = V, n.iter = 0))
+    return(list(pi = 1, n.iter = 0))
   }
   
   J <- 0
@@ -310,10 +317,6 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, v
     cat("Start Posterior Analysis.", "\n")
   }
   
-  U = CASE_training$U
-  V = CASE_training$V
-  pi = CASE_training$pi
-  
   if (is.null(Z)){
     Z = hatB / hatS
   }
@@ -322,15 +325,19 @@ CASE_test <- function(Z = NULL, R, hatB = NULL, hatS = NULL, N, CASE_training, v
   hatBS = transform_Z(Z, N)
   hatB = hatBS$hatB
   hatS = hatBS$hatS
-
+  
   C <- ncol(hatB)
   M <- nrow(R)
   
+  pi = CASE_training$pi
   if (length(pi) <= 1){
     post_mean = pip = matrix(0, M, C)
-    return(list(pi = pi, U = U, V = V, pip = pip, post_mean = post_mean))
+    return(list(pip = pip, post_mean = post_mean))
   }
   
+  U = CASE_training$U
+  V = CASE_training$V
+
   L = length(U)
   ## MC step
   gBc = gB_coef(U, V)
