@@ -135,7 +135,7 @@ genotype.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> oob = scales::oob_squish</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you misspell an argument name?</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_to_CASE_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="Introduction_to_CASE_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <p>Only SNP 10 and SNP 950 have eQTL effects for all three cell types
 and for the first two cell types, respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -192,7 +192,7 @@ and significance after Bonferroni adjustment
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.055</span>, <span class="op">-</span><span class="fl">4.055</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Variable</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_to_CASE_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="Introduction_to_CASE_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="fine-mapping">Fine-mapping<a class="anchor" aria-label="anchor" href="#fine-mapping"></a>
@@ -309,7 +309,7 @@ the power of identifying the causal variants.</p>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
+<span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -330,21 +330,21 @@ the power of identifying the causal variants.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] tidyr_1.3.1   ggplot2_4.0.0 CASE_0.3.1   </span></span>
+<span><span class="co">#&gt; [1] tidyr_1.3.2   ggplot2_4.0.2 CASE_0.3.1   </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.1.4        compiler_4.5.1    </span></span>
-<span><span class="co">#&gt;  [5] tidyselect_1.2.1   jquerylib_0.1.4    systemfonts_1.2.3  scales_1.4.0      </span></span>
-<span><span class="co">#&gt;  [9] textshaping_1.0.3  yaml_2.3.10        fastmap_1.2.0      R6_2.6.1          </span></span>
-<span><span class="co">#&gt; [13] labeling_0.4.3     generics_0.1.4     knitr_1.50         MASS_7.3-65       </span></span>
-<span><span class="co">#&gt; [17] tibble_3.3.0       desc_1.4.3         bslib_0.9.0        pillar_1.11.1     </span></span>
-<span><span class="co">#&gt; [21] RColorBrewer_1.1-3 rlang_1.1.6        cachem_1.1.0       xfun_0.53         </span></span>
-<span><span class="co">#&gt; [25] fs_1.6.6           sass_0.4.10        S7_0.2.0           cli_3.6.5         </span></span>
-<span><span class="co">#&gt; [29] pkgdown_2.1.3      withr_3.0.2        magrittr_2.0.4     digest_0.6.37     </span></span>
-<span><span class="co">#&gt; [33] grid_4.5.1         mvtnorm_1.3-3      lifecycle_1.0.4    vctrs_0.6.5       </span></span>
-<span><span class="co">#&gt; [37] evaluate_1.0.5     glue_1.8.0         farver_2.1.2       ragg_1.5.0        </span></span>
-<span><span class="co">#&gt; [41] purrr_1.1.0        rmarkdown_2.30     tools_4.5.1        pkgconfig_2.0.3   </span></span>
-<span><span class="co">#&gt; [45] htmltools_0.5.8.1</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.2.0        compiler_4.5.3    </span></span>
+<span><span class="co">#&gt;  [5] tidyselect_1.2.1   jquerylib_0.1.4    systemfonts_1.3.2  scales_1.4.0      </span></span>
+<span><span class="co">#&gt;  [9] textshaping_1.0.5  yaml_2.3.12        fastmap_1.2.0      R6_2.6.1          </span></span>
+<span><span class="co">#&gt; [13] labeling_0.4.3     generics_0.1.4     knitr_1.51         MASS_7.3-65       </span></span>
+<span><span class="co">#&gt; [17] tibble_3.3.1       desc_1.4.3         bslib_0.10.0       pillar_1.11.1     </span></span>
+<span><span class="co">#&gt; [21] RColorBrewer_1.1-3 rlang_1.1.7        cachem_1.1.0       xfun_0.56         </span></span>
+<span><span class="co">#&gt; [25] fs_1.6.7           sass_0.4.10        S7_0.2.1           cli_3.6.5         </span></span>
+<span><span class="co">#&gt; [29] pkgdown_2.2.0      withr_3.0.2        magrittr_2.0.4     digest_0.6.39     </span></span>
+<span><span class="co">#&gt; [33] grid_4.5.3         mvtnorm_1.3-5      lifecycle_1.0.5    vctrs_0.7.1       </span></span>
+<span><span class="co">#&gt; [37] evaluate_1.0.5     glue_1.8.0         farver_2.1.2       ragg_1.5.1        </span></span>
+<span><span class="co">#&gt; [41] purrr_1.2.1        rmarkdown_2.30     tools_4.5.3        pkgconfig_2.0.3   </span></span>
+<span><span class="co">#&gt; [45] htmltools_0.5.9</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -364,7 +364,7 @@ the power of identifying the causal variants.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
