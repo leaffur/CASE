@@ -23,4 +23,4 @@ This is an early version of CASE, and we welcome any feedback or suggestions for
 
 ## 3. Reference
 
-  - *Lin, C. et al. (2025). Leveraging cell-type specificity and similarity improves single-cell eQTL fine-mapping. bioRxiv.* [Link](https://doi.org/10.1101/2025.03.05.641709).
+  - *Lin, C., Lin, Y., Li, W. et al. Leveraging cell-type specificity and similarity improves single-cell eQTL fine-mapping. Nat Commun 17, 5591 (2026).* [Link](https://doi.org/10.1038/s41467-026-72176-3).
